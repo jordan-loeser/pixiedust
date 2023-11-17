@@ -6,7 +6,7 @@ import NYCTrainApplet from "./pixiedust-applets/nyctrainsign";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
-  : 8080;
+  : 3000;
 
 const app = express();
 
