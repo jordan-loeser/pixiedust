@@ -2,10 +2,11 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
   "compilerOptions": {
+    "rootDirs": ["src/"],
     "lib": ["ES2015"],
     "module": "CommonJS",
     "target": "ES6",
-    "outDir": "./build",
+    "outDir": "build",
     "composite": false,
     "declaration": true,
     "declarationMap": true,
@@ -25,5 +26,5 @@
     "resolveJsonModule": true
   },
   "exclude": ["node_modules"],
-  "include": ["/**/*.ts"]
+  "include": ["src/**/*"]
 }
