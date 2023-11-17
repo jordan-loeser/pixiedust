@@ -31,6 +31,4 @@ RUN yarn build
 # Copy static files
 COPY src/public dist/src/public
 
-# Expose port 3000
-EXPOSE 3000
 CMD ["dist/index.js"]

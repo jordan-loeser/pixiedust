@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate:stations": "python3 src/pixiedust-applets/nyctrainsign/scripts/build-stations.py"
   },
   "dependencies": {
     "bdfparser": "^2.2.5",

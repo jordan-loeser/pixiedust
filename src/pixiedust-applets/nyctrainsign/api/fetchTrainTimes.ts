@@ -21,8 +21,11 @@ const arrivalTimeDifference = (a: Train, b: Train) =>
 
 const API_URL = "https://api.wheresthefuckingtrain.com"; // TODO: make secret
 
-export const getTerminal = (route: Route, direction: Direction) =>
-  (LAST_STOPS as LastStop)[route][direction];
+export const getTerminal = (route: Route, direction: Direction) => {
+  const terminals = (LAST_STOPS as LastStop)[route];
+  if (!terminals) throw new Error(`Terminal not found for route: ${route}`);
+  return terminals[direction];
+};
 
 export const parseTrains = (
   rawTrains: { route: string; time: string }[],
