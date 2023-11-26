@@ -1,4 +1,5 @@
 import GIFEncoder from "gif-encoder";
+import { gammaCorrect } from "./util/gammaCorrect";
 
 const DEFAULT_FRAME_RATE = 20; // fps
 
@@ -60,9 +61,12 @@ export abstract class Applet implements AppletInterface {
     this.isDone = false;
     while (!this.isDone) {
       this.draw();
-      encoder.addFrame(
-        this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height).data
+
+      const pixels = gammaCorrect(
+        this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
       );
+
+      encoder.addFrame(pixels);
     }
 
     // Write output
