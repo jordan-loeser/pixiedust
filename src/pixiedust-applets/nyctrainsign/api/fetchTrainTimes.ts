@@ -52,16 +52,19 @@ export const parseStation = (res: WTFStationResponse) => {
   } as Station;
 };
 
-export const isStale = (res: WTFStationResponse) =>
-  new Date(Date.now()).getTime() - new Date(res.data[0].last_update).getTime() >
-  1 * 60 * 60 * 1000;
+export const isStale = (res: WTFStationResponse) => {
+  const now = new Date(Date.now()).getTime();
+  const updated = new Date(res.data[0].last_update).getTime();
+  const hour_ms = 1 * 60 * 60 * 1000;
+  return now - updated > hour_ms;
+};
 
 export const fetchStation = async (stationId: Station["id"]) => {
   const res = await fetch(`${API_URL}/by-id/${stationId}`);
 
   const json = await res.json();
 
-  // if (isStale(json)) throw new Error("Data is stale, something is wrong.");
+  if (isStale(json)) throw new Error("Data is stale, something is wrong.");
 
   return parseStation(json);
 };

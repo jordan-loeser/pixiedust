@@ -20,6 +20,7 @@ const fontPaths: Record<Font, string> = {
 
 export const loadFont = async (font: Font) => {
   const fontPath = path.join(FONT_DIRECTORY, fontPaths[font]);
-  console.debug(">>>", "loading font:", fontPath);
+  if (process.env.NODE_ENV == "development")
+    console.debug("Loading font:", fontPath);
   return BDFFont(getline(fontPath)); // TODO: Is there some way to like.. cache this?
 };

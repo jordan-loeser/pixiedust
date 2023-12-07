@@ -23,7 +23,6 @@ export abstract class Applet implements AppletInterface {
     frameRate: number = DEFAULT_FRAME_RATE
   ) {
     this.canvas = canvas;
-    console.log(">>>", "getContext");
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
     if (this.ctx === null) {
@@ -55,6 +54,7 @@ export abstract class Applet implements AppletInterface {
     });
     encoder.setFrameRate(this.frameRate);
     encoder.setQuality(10);
+    encoder.setDispose(3);
     encoder.writeHeader();
 
     // Generate frames

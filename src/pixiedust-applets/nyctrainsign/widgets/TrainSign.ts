@@ -19,14 +19,15 @@ class TrainSign extends Widget {
   private bottomRow?: TrainSignRow;
 
   constructor(model: TrainSignRowModel) {
-    console.debug(
-      "Building TrainSign...",
-      JSON.stringify(
-        { top: model.topTrain, bottom: model.bottomTrain },
-        null,
-        "\t"
-      )
-    );
+    if (process.env.NODE_ENV == "development")
+      console.debug(
+        "Building TrainSign...",
+        JSON.stringify(
+          { top: model.topTrain, bottom: model.bottomTrain },
+          null,
+          "\t"
+        )
+      );
 
     super(model.ctx, model);
     this.topTrain = model.topTrain;
