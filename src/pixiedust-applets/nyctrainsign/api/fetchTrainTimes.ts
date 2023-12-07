@@ -44,8 +44,8 @@ export const parseStation = (res: WTFStationResponse) => {
   return {
     id: rawStation.id,
     name: rawStation.name,
-    northbound: parseTrains(rawStation.N, "N"),
-    southbound: parseTrains(rawStation.S, "S"),
+    northbound: parseTrains(rawStation.N, Direction.NORTH),
+    southbound: parseTrains(rawStation.S, Direction.SOUTH),
     routes: rawStation.routes,
     updated: new Date(rawStation.last_update),
     location: rawStation.location,
