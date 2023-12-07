@@ -38,9 +38,9 @@ class TrainSignRow extends Widget {
   private minText: Text;
 
   constructor(ctx: CanvasRenderingContext2D, options: TrainSignRowOptions) {
-    console.log("Building TrainSignRow...", options);
+    if (process.env.NODE_ENV == "development")
+      console.log("Building TrainSignRow...", options);
 
-    console.log("ctx:", ctx);
     super(ctx, options);
 
     this.frame = 0;
@@ -116,7 +116,7 @@ class TrainSignRow extends Widget {
     this.ctx.closePath();
 
     // Draw the text marquee
-    this.marquee.scrollAndDraw(this.marquee.isDone || this.frame <= 20 ? 0 : 1);
+    this.marquee.scrollAndDraw(this.marquee.isDone ? 0 : 1); // this.marquee.isDone || this.frame <= 20 ? 0 : 1);
 
     // Draw a background on the time text for aesthetics
     this.ctx.fillStyle = "#000";
@@ -128,7 +128,7 @@ class TrainSignRow extends Widget {
       this.timeText.height!
     );
 
-    // // Draw the text
+    // Draw the text
     this.timeText.draw();
     this.minText.draw();
     this.routeText.draw();

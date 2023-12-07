@@ -1,12 +1,11 @@
 import { Applet } from "../../pixiedust";
 import TrainSign from "./widgets/TrainSign";
 import { fetchStation } from "./api/fetchTrainTimes";
-import { Station } from "./api/types";
+import { Direction, Station } from "./api/types";
 
 type NYCTrainAppletSchema = {
   stationId: Station["id"];
-  showNorthbound?: boolean;
-  showSouthbound?: boolean;
+  direction: Direction;
 };
 
 class NYCTrainApplet extends Applet {
@@ -15,44 +14,38 @@ class NYCTrainApplet extends Applet {
 
   // Config Options
   private stationId: Station["id"];
-  private showNorthbound: boolean;
-  private showSouthbound: boolean;
+  private direction: Direction;
 
   // Train data
   private station?: Station;
 
   // Components
-  private northboundSign?: TrainSign;
-  private southboundSign?: TrainSign;
+  private sign?: TrainSign;
 
   constructor(canvas: HTMLCanvasElement, config: NYCTrainAppletSchema) {
     super(canvas);
-    const { stationId, showNorthbound, showSouthbound } = config;
+    const { stationId, direction } = config;
     this.stationId = stationId;
-    this.showNorthbound = showNorthbound ?? true;
-    this.showSouthbound = showSouthbound ?? true;
+    this.direction = direction;
   }
 
   async setup() {
     // Fetch train times
     this.station = await fetchStation(this.stationId);
 
-    if ((this.showNorthbound ?? true) && this.station.northbound.length > 0) {
-      this.northboundSign = new TrainSign({
-        ctx: this.ctx,
-        topTrain: this.station.northbound.shift(),
-        bottomTrain: this.station.northbound.shift(),
-      });
-      await this.northboundSign.setup();
-    }
+    const trains =
+      this.direction === Direction.NORTH
+        ? this.station.northbound
+        : this.station.southbound;
 
-    if ((this.showSouthbound ?? true) && this.station.southbound.length > 0) {
-      this.southboundSign = new TrainSign({
+    if (trains.length > 0) {
+      this.sign = new TrainSign({
         ctx: this.ctx,
-        topTrain: this.station.southbound.shift(),
-        bottomTrain: this.station.southbound.shift(),
+        topTrain: trains.shift(),
+        bottomTrain: trains.shift(),
       });
-      await this.southboundSign.setup();
+
+      await this.sign.setup();
     }
 
     this.setupHasBeenCalled = true;
@@ -63,29 +56,11 @@ class NYCTrainApplet extends Applet {
     if (!this.setupHasBeenCalled)
       throw new Error("Must call .setup() before drawing.");
 
-    if (
-      this.showNorthbound &&
-      this.northboundSign &&
-      !this.northboundSign.isDone
-    ) {
-      this.northboundSign.draw();
-      return;
-    }
+    if (!this.sign) return;
 
-    if (
-      this.showSouthbound &&
-      this.southboundSign &&
-      !this.southboundSign.isDone
-    ) {
-      this.southboundSign.draw();
-      return;
-    }
+    this.sign.draw();
 
-    const signIsDone = (wasVisible: boolean, sign?: TrainSign) =>
-      !wasVisible || !sign || sign.isDone;
-    this.isDone =
-      signIsDone(this.showNorthbound, this.northboundSign) &&
-      signIsDone(this.showSouthbound, this.southboundSign);
+    this.isDone = this.sign.isDone;
   }
 }
 

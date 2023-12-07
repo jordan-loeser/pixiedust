@@ -1,4 +1,7 @@
-export type Direction = "N" | "S";
+export enum Direction {
+  NORTH = "N",
+  SOUTH = "S",
+}
 
 export type LastStop = Record<Route, Record<Direction, string>>;
 
