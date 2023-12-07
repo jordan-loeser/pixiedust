@@ -50,7 +50,7 @@ class TrainSignRow extends Widget {
     const msReminaing =
       options.arrivalTime.getTime() - new Date(Date.now()).getTime();
 
-    const minutesRemaining = Math.floor(msReminaing / 1000 / 60);
+    const minutesRemaining = Math.max(Math.floor(msReminaing / 1000 / 60), 0);
 
     this.routeText = new Text(options.route, ctx, {
       font: Font.BITOCRA,
