@@ -37,12 +37,6 @@ images:
 options:
   substitutionOption: ALLOW_LOOSE
   logging: CLOUD_LOGGING_ONLY
-substitutions:
-  _SERVICE_NAME: pixiedust-express
-  _DEPLOY_REGION: us-central1
-  _AR_HOSTNAME: us-central1-docker.pkg.dev
-  _PLATFORM: managed
-  _TRIGGER_ID: 59cd4d02-ece0-4970-8045-d544d90fbfad
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
