@@ -26,7 +26,7 @@ app.get("/health", async (_req, res) => {
   res.send("ping");
 });
 
-app.get("/render", async (req, res) => {
+app.get("/render", async (_req, res) => {
   const gifPath = path.join(
     __dirname,
     "public/test-gifs/led_matrices_blobbo.gif"

@@ -29,6 +29,6 @@ RUN yarn build
 # COPY --from=base /dist /dist
 
 # Copy static files
-COPY src/public dist/src/public
+COPY src/public dist/public
 
 CMD ["dist/index.js"]
