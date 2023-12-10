@@ -1,8 +1,6 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import fs from "fs";
-import path from "path";
 import { JSDOM } from "jsdom";
 import NYCTrainApplet from "./pixiedust-applets/nyctrainsign";
 import { Direction } from "./pixiedust-applets/nyctrainsign/api/types";
@@ -27,35 +25,19 @@ app.get("/health", async (_req, res) => {
 });
 
 app.get("/render", async (_req, res) => {
-  const gifPath = path.join(
-    __dirname,
-    "public/test-gifs/led_matrices_blobbo.gif"
-  );
+  const dom = new JSDOM();
+  const canvas = dom.window.document.createElement("canvas");
 
-  // Check if the file exists
-  if (fs.existsSync(gifPath)) {
-    // Read the file and send it as the response
-    const fileStream = fs.createReadStream(gifPath);
-    res.set("Content-Type", "image/gif");
-    fileStream.pipe(res);
-  } else {
-    // If the file doesn't exist, send a 404 Not Found response
-    res.status(404).send("File not found");
-  }
+  canvas.width = 128;
+  canvas.height = 32;
 
-  // const dom = new JSDOM();
-  // const canvas = dom.window.document.createElement("canvas");
+  const testApp = new NYCTrainApplet(canvas, {
+    stationId: "D18",
+    direction: Direction.SOUTH,
+  });
 
-  // canvas.width = 128;
-  // canvas.height = 32;
+  const gif = await testApp.encodeAsGif();
 
-  // const testApp = new NYCTrainApplet(canvas, {
-  //   stationId: "D18",
-  //   direction: Direction.SOUTH,
-  // });
-
-  // const gif = await testApp.encodeAsGif();
-
-  // res.set("Content-Type", "image/gif");
-  // res.send(gif);
+  res.set("Content-Type", "image/gif");
+  res.send(gif);
 });
