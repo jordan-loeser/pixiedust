@@ -16,6 +16,7 @@ RUN yarn install
 
 # Copy source
 COPY src ./src
+COPY @types ./@types
 COPY tsconfig.json ./tsconfig.json
 
 # Build dist

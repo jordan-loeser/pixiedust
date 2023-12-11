@@ -1,4 +1,5 @@
 import GIFEncoder from "gif-encoder";
+import WebP from "node-webpmux";
 import { gammaCorrect } from "./util/gammaCorrect";
 
 const DEFAULT_FRAME_RATE = 20; // fps
@@ -17,6 +18,8 @@ export abstract class Applet implements AppletInterface {
   public frameRate: number; // fps
 
   private frameDuration; // ms
+
+  static isLibWebPInitialized = false;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -72,6 +75,54 @@ export abstract class Applet implements AppletInterface {
     // Write output
     encoder.finish();
     return encoder.read();
+  }
+
+  async encodeAsWebP(): Promise<Buffer> {
+    await this.setup();
+
+    const frames = [];
+
+    this.isDone = false;
+    while (!this.isDone) {
+      this.draw();
+      frames.push(await Applet.generateWebPFrameFromCanvas(this.canvas));
+    }
+
+    // TODO: make lossy? figure out color quality issues?
+    return WebP.Image.save(null, {
+      width: this.canvas.width,
+      height: this.canvas.height,
+      delay: this.frameDuration,
+      dispose: true,
+      frames,
+    });
+  }
+
+  // Static Functions
+  static async generateWebPFrameFromCanvas(
+    canvas: HTMLCanvasElement,
+    lossless: WebP.SetImageDataOptions["lossless"] = 5
+  ) {
+    if (!this.isLibWebPInitialized) {
+      await WebP.Image.initLib();
+      this.isLibWebPInitialized = true;
+    }
+
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = gammaCorrect(canvasImageData);
+
+    const img = await WebP.Image.getEmptyImage();
+    await img.setImageData(Buffer.from(pixels), {
+      // TODO: use canvasImageData.data.buffer as Buffer?
+      width: canvas.width,
+      height: canvas.height,
+      lossless,
+    });
+
+    // Convert the image data into a frame
+    const frame = await WebP.Image.generateFrame({ img });
+    return frame;
   }
 }
 

@@ -19,6 +19,7 @@
     "gif-encoder": "^0.7.2",
     "helmet": "^7.0.0",
     "jsdom": "^22.1.0",
+    "node-webpmux": "^3.2.0",
     "readlineiter": "^1.0.1"
   },
   "devDependencies": {
