@@ -70,11 +70,16 @@ const downtown14th = new NYCTrainApplet(canvas, {
 });
 scheduler.register(downtown14th);
 
-app.get("/render", async (_req, res) => {
+app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
 
-  const gif = await applet.encodeAsGif();
-
-  res.set("Content-Type", "image/gif");
-  res.send(gif);
+  if (req.query.format === "webp") {
+    const webp = await applet.encodeAsWebP();
+    res.set("Content-Type", "image/webp");
+    res.send(webp);
+  } else {
+    const gif = await applet.encodeAsGif();
+    res.set("Content-Type", "image/gif");
+    res.send(gif);
+  }
 });
