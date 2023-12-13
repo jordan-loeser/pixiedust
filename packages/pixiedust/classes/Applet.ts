@@ -1,6 +1,6 @@
 import GIFEncoder from "gif-encoder";
 import WebP from "node-webpmux";
-import { gammaCorrect } from "./util/gammaCorrect";
+import { gammaCorrect } from "../util/gammaCorrect";
 
 const DEFAULT_FRAME_RATE = 20; // fps
 

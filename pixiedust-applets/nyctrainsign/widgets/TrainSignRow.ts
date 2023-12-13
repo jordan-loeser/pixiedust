@@ -6,7 +6,7 @@ import {
   TextAlignment,
   WidgetOptions,
   Font,
-} from "../../../pixiedust";
+} from "pixiedust";
 import { Route, Train } from "../api/types";
 import { ROUTE_METADATA } from "../data/routes";
 

@@ -2,7 +2,7 @@ import { $Font as BDFFont } from "bdfparser";
 import getline from "readlineiter";
 import path from "path";
 
-const FONT_DIRECTORY = path.join(process.cwd(), "src/pixiedust/bin/fonts");
+const FONT_DIRECTORY = path.join(__dirname, "../fonts");
 
 export enum Font {
   BITOCRA = "bitocra",

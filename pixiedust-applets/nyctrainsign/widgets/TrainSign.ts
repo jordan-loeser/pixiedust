@@ -1,4 +1,4 @@
-import { Widget, WidgetOptions } from "../../../pixiedust";
+import { Widget, WidgetOptions } from "pixiedust";
 import { Train } from "../api/types";
 import TrainSignRow from "./TrainSignRow";
 

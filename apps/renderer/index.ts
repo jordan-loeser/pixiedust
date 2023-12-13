@@ -2,9 +2,8 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { JSDOM } from "jsdom";
-import NYCTrainApplet from "./pixiedust-applets/nyctrainsign";
-import { Direction } from "./pixiedust-applets/nyctrainsign/api/types";
-import { Scheduler } from "./pixiedust/Scheduler";
+import NYCTrainApplet, { Direction } from "nyctrainsign";
+import { Scheduler } from "pixiedust";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)

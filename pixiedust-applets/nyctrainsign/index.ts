@@ -1,4 +1,4 @@
-import { Applet } from "../../pixiedust";
+import { Applet } from "pixiedust";
 import TrainSign from "./widgets/TrainSign";
 import { fetchStation } from "./api/fetchTrainTimes";
 import { Direction, Station } from "./api/types";
@@ -65,3 +65,5 @@ class NYCTrainApplet extends Applet {
 }
 
 export default NYCTrainApplet;
+
+export { Direction, Station };
