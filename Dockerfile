@@ -1,8 +1,22 @@
+# --------------------------------------------------------------------------
+#  This Dockerfile is used to build /apps/renderer.
+#
+# TODO:
+#   - Implement docker-compose and move this file in /apps/renderer.
+# --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# NOTE: 
+# I tried to optimize this Dockerfile using Turbo pruning but 
+# I ran into an issue. Tracking here:
+#
+# https://github.com/Jordan-Loeser/pixiedust-express/issues/14
+# --------------------------------------------------------------------------
+
 FROM node:18.17.0 as base
 
 # Add package file
-COPY package.json ./
-COPY yarn.lock ./
+COPY . .
 
 # Install dependencies for node-canvas
 RUN apt-get update && apt-get install -y \
@@ -14,22 +28,7 @@ RUN apt-get update && apt-get install -y \
 # Install deps
 RUN yarn install
 
-# Copy source
-COPY src ./src
-COPY @types ./@types
-COPY tsconfig.json ./tsconfig.json
-
 # Build dist
 RUN yarn build
 
-# # Start production image build
-# FROM node:18.17.0
-
-# # Copy node modules and build directory
-# COPY --from=base ./node_modules ./node_modules # What if it's something with copying the node_modules??
-# COPY --from=base /dist /dist
-
-# Copy static files
-COPY src/public dist/public
-
-CMD ["dist/index.js"]
+CMD ["node", "apps/renderer/dist/index.js"]
