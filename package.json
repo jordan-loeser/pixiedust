@@ -2,13 +2,14 @@
   "name": "pixiedust-turborepo",
   "version": "1.0.0",
   "scripts": {
+    "prepare": "husky install",
     "build": "turbo run build",
     "dev": "turbo run dev --no-cache --continue",
     "test": "turbo run test",
+    "cm": "cz",
     "docker:build": "docker build -t pixiedust .",
     "docker:run": "docker run -p 3000:3000 pixiedust",
-    "docker:explore": "docker run --rm -it --entrypoint=/bin/bash pixiedust",
-    "cm": "cz"
+    "docker:explore": "docker run --rm -it --entrypoint=/bin/bash pixiedust"
   },
   "workspaces": [
     "apps/*",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
+    "husky": "^8.0.3",
     "turbo": "^1.10.14"
   }
 }
