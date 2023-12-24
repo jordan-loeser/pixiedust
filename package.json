@@ -7,7 +7,8 @@
     "test": "turbo run test",
     "docker:build": "docker build -t pixiedust .",
     "docker:run": "docker run -p 3000:3000 pixiedust",
-    "docker:explore": "docker run --rm -it --entrypoint=/bin/bash pixiedust"
+    "docker:explore": "docker run --rm -it --entrypoint=/bin/bash pixiedust",
+    "cm": "cz"
   },
   "workspaces": [
     "apps/*",
@@ -19,6 +20,8 @@
   ],
   "private": true,
   "devDependencies": {
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "turbo": "^1.10.14"
   }
 }
