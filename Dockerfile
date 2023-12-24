@@ -5,6 +5,14 @@
 #   - Implement docker-compose and move this file in /apps/renderer.
 # --------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------
+# NOTE: 
+# I tried to optimize this Dockerfile using Turbo pruning but 
+# I ran into an issue. Tracking here:
+#
+# https://github.com/Jordan-Loeser/pixiedust-express/issues/14
+# --------------------------------------------------------------------------
+
 FROM node:18.17.0 as base
 
 # Add package file
@@ -22,7 +30,5 @@ RUN yarn install
 
 # Build dist
 RUN yarn build
-
-# NOTE: using multiple stages is breaking canvas... simplified to one
 
 CMD ["node", "apps/renderer/dist/index.js"]
