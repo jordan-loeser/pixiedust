@@ -1,8 +1,6 @@
 {
   "name": "pixiedust",
   "version": "1.0.0",
-  "main": "index.ts",
-  "types": "index.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"

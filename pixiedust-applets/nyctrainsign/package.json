@@ -2,11 +2,6 @@
   "name": "nyctrainsign",
   "version": "1.0.0",
   "description": "Displays MTA train times for a single station.",
-  "main": "index.ts",
-  "types": "index.ts",
-  "files": [
-    "build/**"
-  ],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,10 +9,12 @@
   },
   "author": "Jordan Loeser",
   "license": "ISC",
+  "dependencies": {
+    "pixiedust": "*"
+  },
   "devDependencies": {
     "@types/express": "^4.17.18",
     "@types/node": "^20.8.2",
-    "pixiedust": "*",
     "tsconfig": "*",
     "typescript": "^5.2.2"
   }

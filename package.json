@@ -4,8 +4,10 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --no-cache --continue",
-    "dev:new": "turbo run dev --no-cache --continue --parallel",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "docker:build": "docker build -t pixiedust .",
+    "docker:run": "docker run -p 3000:3000 pixiedust",
+    "docker:explore": "docker run --rm -it --entrypoint=/bin/bash pixiedust"
   },
   "workspaces": [
     "apps/*",

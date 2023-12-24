@@ -2,8 +2,6 @@
   "name": "renderer",
   "version": "1.0.0",
   "description": "An express API to render animated webp and gif images from pixiedust applets.",
-  "main": "index.ts",
-  "types": "index.ts",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
@@ -17,7 +15,8 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "helmet": "^7.1.0",
-    "jsdom": "^23.0.1"
+    "jsdom": "^23.0.1",
+    "nyctrainsign": "*"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -25,9 +24,9 @@
     "@types/helmet": "^4.0.0",
     "@types/jsdom": "^21.1.6",
     "@types/node": "^20.10.4",
-    "nyctrainsign": "*",
     "ts-node-dev": "^2.0.0",
     "tsc": "^2.0.4",
+    "tsconfig": "*",
     "typescript": "^5.3.3"
   }
 }
