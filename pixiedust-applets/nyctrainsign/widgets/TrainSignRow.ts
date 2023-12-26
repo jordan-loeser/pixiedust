@@ -53,9 +53,9 @@ class TrainSignRow extends Widget {
     const minutesRemaining = Math.max(Math.floor(msReminaing / 1000 / 60), 0);
 
     this.routeText = new Text(options.route, ctx, {
-      font: Font.BITOCRA,
-      x: 6,
-      y: 0,
+      font: Font.CHERRY,
+      x: 4,
+      y: 1,
       pixelColors: {
         "0": null, // background
         "1": "#000", // foreground
