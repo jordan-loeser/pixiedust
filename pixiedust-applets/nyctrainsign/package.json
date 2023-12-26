@@ -2,6 +2,8 @@
   "name": "nyctrainsign",
   "version": "1.0.0",
   "description": "Displays MTA train times for a single station.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
