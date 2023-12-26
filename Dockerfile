@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
 # Install deps
 RUN yarn install
 
-# Build dist
-RUN yarn build
+# Build dist for renderer
+RUN yarn build --filter=renderer
 
 CMD ["node", "apps/renderer/dist/index.js"]
