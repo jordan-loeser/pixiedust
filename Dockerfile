@@ -16,6 +16,7 @@
 FROM node:18.17.0 as base
 
 # Add package file
+WORKDIR /app
 COPY . .
 
 # Install dependencies for node-canvas
