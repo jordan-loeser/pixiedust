@@ -68,7 +68,8 @@ class TrainSignRow extends Widget {
       x: (PADDING_START + RADIUS) * 2,
       y: 1,
       width: 87,
-      pixelColors: GREEN_PIXEL_COLORS,
+      pixelColors:
+        minutesRemaining === 0 ? ORANGE_PIXEL_COLORS : GREEN_PIXEL_COLORS,
     });
 
     this.timeText = new Text(minutesRemaining.toString(), ctx, {
@@ -84,7 +85,8 @@ class TrainSignRow extends Widget {
       alignment: TextAlignment.RIGHT,
       x: ctx.canvas.width - 1 + 4,
       y: 1,
-      pixelColors: GREEN_PIXEL_COLORS,
+      pixelColors:
+        minutesRemaining === 0 ? ORANGE_PIXEL_COLORS : GREEN_PIXEL_COLORS,
     });
   }
 
