@@ -12,7 +12,6 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*",
     "pixiedust",
     "pixiedust-applets/*"
   ],
