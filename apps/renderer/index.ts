@@ -31,6 +31,8 @@ const canvas = dom.window.document.createElement("canvas");
 canvas.width = 128;
 canvas.height = 32;
 
+// TODO: implement scheduler UI rather than hard-coding
+
 const scheduler = new Scheduler();
 
 // const uptown23rd = new NYCTrainApplet(canvas, {
