@@ -75,7 +75,7 @@ scheduler.register(conways2);
 
 const conways3 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [
-    { cellSize: 2, cellColor: "red" },
+    { cellSize: 4, cellColor: "red" },
     { cellSize: 2, cellColor: "blue" },
   ],
   compositeOperation: "screen",

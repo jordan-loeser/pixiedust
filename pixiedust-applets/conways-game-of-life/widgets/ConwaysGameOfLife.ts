@@ -34,23 +34,12 @@ export class ConwaysGameOfLife extends Widget {
   }
 
   async setup() {
-    this.initializeGrid();
+    this.grid = ConwaysGameOfLife.getFreshGrid(this.numRows, this.numCols);
     this.setupHasBeenCalled = true;
-  }
-
-  initializeGrid() {
-    this.grid = [];
-    for (let i = 0; i < this.numRows; i++) {
-      this.grid[i] = [];
-      for (let j = 0; j < this.numCols; j++) {
-        this.grid[i][j] = Math.random() > 0.5 ? 1 : 0;
-      }
-    }
   }
 
   // TODO: make this a pixiedust helper
   drawGrid() {
-    this.ctx.save();
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {
         if (this.grid[i][j] === 1) {
@@ -64,11 +53,10 @@ export class ConwaysGameOfLife extends Widget {
         }
       }
     }
-    this.ctx.restore();
   }
 
   updateGrid() {
-    const newGrid: typeof this.grid = [];
+    const newGrid: number[][] = [];
     for (let i = 0; i < this.numRows; i++) {
       newGrid[i] = [];
       for (let j = 0; j < this.numCols; j++) {
@@ -109,5 +97,16 @@ export class ConwaysGameOfLife extends Widget {
 
     this.drawGrid();
     this.updateGrid();
+  }
+
+  static getFreshGrid(numRows: number, numCols: number) {
+    const freshGrid: number[][] = [];
+    for (let i = 0; i < numRows; i++) {
+      freshGrid[i] = [];
+      for (let j = 0; j < numCols; j++) {
+        freshGrid[i][j] = Math.random() > 0.5 ? 1 : 0;
+      }
+    }
+    return freshGrid;
   }
 }

@@ -49,6 +49,7 @@ export abstract class Applet implements AppletInterface {
   }
 
   async encodeAsGif(): Promise<Buffer | null> {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     await this.setup();
 
     // Initialize encoder
@@ -78,6 +79,7 @@ export abstract class Applet implements AppletInterface {
   }
 
   async encodeAsWebP(): Promise<Buffer> {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     await this.setup();
 
     const frames = [];
