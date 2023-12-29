@@ -36,32 +36,38 @@ canvas.height = 32;
 
 const scheduler = new Scheduler();
 
-const uptown18th = new NYCTrainApplet(canvas, {
-  stationId: "131",
-  direction: Direction.NORTH,
-});
-scheduler.register(uptown18th);
+// const uptown18th = new NYCTrainApplet(canvas, {
+//   stationId: "131",
+//   direction: Direction.NORTH,
+// });
+// scheduler.register(uptown18th);
 
-const downtown18th = new NYCTrainApplet(canvas, {
-  stationId: "131",
-  direction: Direction.SOUTH,
-});
-scheduler.register(downtown18th);
+// const downtown18th = new NYCTrainApplet(canvas, {
+//   stationId: "131",
+//   direction: Direction.SOUTH,
+// });
+// scheduler.register(downtown18th);
 
-const uptown14th = new NYCTrainApplet(canvas, {
-  stationId: "A31",
-  direction: Direction.NORTH,
-});
-scheduler.register(uptown14th);
+// const uptown14th = new NYCTrainApplet(canvas, {
+//   stationId: "A31",
+//   direction: Direction.NORTH,
+// });
+// scheduler.register(uptown14th);
 
-const downtown14th = new NYCTrainApplet(canvas, {
-  stationId: "A31",
-  direction: Direction.SOUTH,
-});
-scheduler.register(downtown14th);
+// const downtown14th = new NYCTrainApplet(canvas, {
+//   stationId: "A31",
+//   direction: Direction.SOUTH,
+// });
+// scheduler.register(downtown14th);
 
 const conways = new ConwaysGameOfLifeApplet(canvas, { color: "#5500aa" });
 scheduler.register(conways);
+
+const conways2 = new ConwaysGameOfLifeApplet(canvas);
+scheduler.register(conways2);
+
+const conways3 = new ConwaysGameOfLifeApplet(canvas, { color: "pink" });
+scheduler.register(conways3);
 
 app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
