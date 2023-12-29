@@ -4,7 +4,7 @@ Displays the next two trains arriving at a given MTA station in a given directio
 
 ## Preview
 
-<img src="./docs/render.gif" width="512px"/>
+<img src="./docs/render.gif" style="image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;" width="100%"/>
 
 ## Config Values
 
