@@ -15,6 +15,7 @@ type ConwaysGameOfLifeAppletSchema = {
   frameRate?: number;
   frameCount?: number;
   layers?: ConwaysGameOfLifeOptions[];
+  compositeOperation?: CanvasRenderingContext2D["globalCompositeOperation"];
 };
 
 class ConwaysGameOfLifeApplet extends Applet {
@@ -43,6 +44,8 @@ class ConwaysGameOfLifeApplet extends Applet {
     this.layers = config.layers ?? DEFAULT_LAYERS;
     this.fadeOut = config.fadeOut ?? true;
     this.fadeDuration = config.fadeDuration ?? DEFAULT_FADE_DURATION;
+    if (config.compositeOperation)
+      this.ctx.globalCompositeOperation = config.compositeOperation;
 
     if (this.fadeOut && this.fadeDuration > this.frameCount)
       throw new Error("frameCount must be > fadeDuration when fadeOut = true");
@@ -55,6 +58,7 @@ class ConwaysGameOfLifeApplet extends Applet {
 
   async setup() {
     this.frame = 0;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.layers.forEach(async (options) => {
       const newConway = new ConwaysGameOfLife(this.ctx, options);
       await newConway.setup();
@@ -73,6 +77,7 @@ class ConwaysGameOfLifeApplet extends Applet {
       this.conways.forEach((conway) => conway.draw());
     } else {
       // Fade out if configured
+      this.ctx.globalCompositeOperation = "source-over";
       this.ctx.fillStyle = `rgba(0, 0, 0, ${this.sliceAlpha})`;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
