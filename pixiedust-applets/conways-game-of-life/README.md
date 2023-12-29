@@ -8,6 +8,10 @@ A representation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway
 
 <img src="./docs/render.gif" width="512px"/>
 
+### With Layers
+
+<img src="./docs/render_with-layers.gif" width="512px"/>
+
 ## Config Values
 
 | Key          | Type     | Description                       | Default    |

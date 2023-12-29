@@ -27,6 +27,7 @@ class ConwaysGameOfLifeApplet extends Applet {
   private layers: ConwaysGameOfLifeOptions[];
   private fadeOut: boolean;
   private fadeDuration: number;
+  private compositeOperation?: CanvasRenderingContext2D["globalCompositeOperation"];
 
   // Helpers
   private framesToAnimate: number;
@@ -44,8 +45,6 @@ class ConwaysGameOfLifeApplet extends Applet {
     this.layers = config.layers ?? DEFAULT_LAYERS;
     this.fadeOut = config.fadeOut ?? true;
     this.fadeDuration = config.fadeDuration ?? DEFAULT_FADE_DURATION;
-    if (config.compositeOperation)
-      this.ctx.globalCompositeOperation = config.compositeOperation;
 
     if (this.fadeOut && this.fadeDuration > this.frameCount)
       throw new Error("frameCount must be > fadeDuration when fadeOut = true");
@@ -72,15 +71,20 @@ class ConwaysGameOfLifeApplet extends Applet {
     if (!this.setupHasBeenCalled)
       throw new Error("Must call .setup() before drawing.");
 
+    this.ctx.save();
     if (this.frame < this.framesToAnimate) {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      if (this.compositeOperation)
+        this.ctx.globalCompositeOperation = this.compositeOperation;
+      this.ctx.globalCompositeOperation = "screen";
       this.conways.forEach((conway) => conway.draw());
     } else {
       // Fade out if configured
-      this.ctx.globalCompositeOperation = "source-over";
+      // this.ctx.globalCompositeOperation = "source-over";
       this.ctx.fillStyle = `rgba(0, 0, 0, ${this.sliceAlpha})`;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
+    this.ctx.restore();
 
     // Stop animation after a certain number of frames
     this.frame += 1;
