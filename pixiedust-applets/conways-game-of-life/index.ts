@@ -1,15 +1,21 @@
 import { Applet } from "pixiedust";
+import {
+  ConwaysGameOfLife,
+  ConwaysGameOfLifeOptions,
+} from "./widgets/ConwaysGameOfLife";
 
-const DEFAULT_CELL_SIZE = 1;
 const DEFAULT_FRAME_RATE = 10;
 const DEFAULT_FRAME_COUNT = 70;
-const DEFAULT_COLOR = "orange";
+const DEFAULT_LAYERS = [{}];
+const DEFAULT_FADE_DURATION = 3;
 
 type ConwaysGameOfLifeAppletSchema = {
-  cellSize?: number;
+  fadeOut?: boolean;
+  fadeDuration?: number;
   frameRate?: number;
   frameCount?: number;
-  color?: string;
+  layers?: ConwaysGameOfLifeOptions[];
+  compositeOperation?: CanvasRenderingContext2D["globalCompositeOperation"];
 };
 
 class ConwaysGameOfLifeApplet extends Applet {
@@ -17,105 +23,64 @@ class ConwaysGameOfLifeApplet extends Applet {
   protected setupHasBeenCalled = false;
 
   // Config Options
-  private cellSize: number;
   private frameCount: number;
-  private color: string;
+  private layers: ConwaysGameOfLifeOptions[];
+  private fadeOut: boolean;
+  private fadeDuration: number;
 
-  // For Calculations
-  private grid: number[][] = [];
-  private numRows: number;
-  private numCols: number;
+  // Helpers
+  private framesToAnimate: number;
+  private sliceAlpha: number;
+
+  // Components
+  private conways: ConwaysGameOfLife[] = [];
 
   constructor(
     canvas: HTMLCanvasElement,
     config: ConwaysGameOfLifeAppletSchema = {}
   ) {
     super(canvas, config.frameRate ?? DEFAULT_FRAME_RATE);
-    this.cellSize = config.cellSize ?? DEFAULT_CELL_SIZE;
     this.frameCount = config.frameCount ?? DEFAULT_FRAME_COUNT;
-    this.color = config.color ?? DEFAULT_COLOR;
-    this.numRows = canvas.height / this.cellSize;
-    this.numCols = canvas.width / this.cellSize;
+    this.layers = config.layers ?? DEFAULT_LAYERS;
+    this.fadeOut = config.fadeOut ?? true;
+    this.fadeDuration = config.fadeDuration ?? DEFAULT_FADE_DURATION;
+    if (config.compositeOperation)
+      this.ctx.globalCompositeOperation = config.compositeOperation;
+
+    if (this.fadeOut && this.fadeDuration > this.frameCount)
+      throw new Error("frameCount must be > fadeDuration when fadeOut = true");
+
+    // Calculate helpers
+    this.framesToAnimate =
+      this.frameCount - (this.fadeOut ? this.fadeDuration : 0);
+    this.sliceAlpha = 1 / this.fadeDuration;
   }
 
   async setup() {
     this.frame = 0;
-    this.initializeGrid();
-    this.setupHasBeenCalled = true;
-  }
-
-  initializeGrid() {
-    this.grid = [];
-    for (let i = 0; i < this.numRows; i++) {
-      this.grid[i] = [];
-      for (let j = 0; j < this.numCols; j++) {
-        this.grid[i][j] = Math.random() > 0.5 ? 1 : 0;
-      }
-    }
-  }
-
-  // TODO: make this a pixiedust helper
-  drawGrid() {
-    this.ctx.save();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let i = 0; i < this.numRows; i++) {
-      for (let j = 0; j < this.numCols; j++) {
-        if (this.grid[i][j] === 1) {
-          this.ctx.fillStyle = this.color;
-          this.ctx.fillRect(
-            j * this.cellSize,
-            i * this.cellSize,
-            this.cellSize,
-            this.cellSize
-          );
-        }
-      }
-    }
-    this.ctx.restore();
-  }
+    this.layers.forEach(async (options) => {
+      const newConway = new ConwaysGameOfLife(this.ctx, options);
+      await newConway.setup();
+      this.conways.push(newConway);
+    });
 
-  updateGrid() {
-    const newGrid: typeof this.grid = [];
-    for (let i = 0; i < this.numRows; i++) {
-      newGrid[i] = [];
-      for (let j = 0; j < this.numCols; j++) {
-        const neighbors = this.countNeighbors(i, j);
-        if (this.grid[i][j] === 1) {
-          newGrid[i][j] = neighbors === 2 || neighbors === 3 ? 1 : 0;
-        } else {
-          newGrid[i][j] = neighbors === 3 ? 1 : 0;
-        }
-      }
-    }
-    this.grid = newGrid;
-  }
-
-  countNeighbors(row: number, col: number) {
-    let count = 0;
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        const newRow = row + i;
-        const newCol = col + j;
-        if (
-          newRow >= 0 &&
-          newRow < this.numRows &&
-          newCol >= 0 &&
-          newCol < this.numCols
-        ) {
-          count += this.grid[newRow][newCol];
-        }
-      }
-    }
-    count -= this.grid[row][col]; // Exclude the center cell itself
-    return count;
+    this.setupHasBeenCalled = true;
   }
 
   draw() {
     if (!this.setupHasBeenCalled)
       throw new Error("Must call .setup() before drawing.");
 
-    this.drawGrid();
-    this.updateGrid();
+    if (this.frame < this.framesToAnimate) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.conways.forEach((conway) => conway.draw());
+    } else {
+      // Fade out if configured
+      this.ctx.globalCompositeOperation = "source-over";
+      this.ctx.fillStyle = `rgba(0, 0, 0, ${this.sliceAlpha})`;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 
     // Stop animation after a certain number of frames
     this.frame += 1;

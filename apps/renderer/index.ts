@@ -60,13 +60,26 @@ const scheduler = new Scheduler();
 // });
 // scheduler.register(downtown14th);
 
-const conways = new ConwaysGameOfLifeApplet(canvas, { color: "#5500aa" });
+const conways = new ConwaysGameOfLifeApplet(canvas, {
+  layers: [{ cellColor: "#5500aa" }],
+  fadeOut: true,
+});
 scheduler.register(conways);
 
-const conways2 = new ConwaysGameOfLifeApplet(canvas);
+const conways2 = new ConwaysGameOfLifeApplet(canvas, {
+  layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
+  fadeOut: true,
+});
 scheduler.register(conways2);
 
-const conways3 = new ConwaysGameOfLifeApplet(canvas, { color: "pink" });
+const conways3 = new ConwaysGameOfLifeApplet(canvas, {
+  layers: [
+    { cellSize: 2, cellColor: "red" },
+    { cellSize: 2, cellColor: "blue" },
+  ],
+  compositeOperation: "screen",
+  frameCount: 50,
+});
 scheduler.register(conways3);
 
 app.get("/render", async (req, res) => {

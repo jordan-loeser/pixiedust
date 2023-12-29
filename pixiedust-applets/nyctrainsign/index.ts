@@ -9,7 +9,6 @@ type NYCTrainAppletSchema = {
 };
 
 class NYCTrainApplet extends Applet {
-  private frame: number = 0;
   protected setupHasBeenCalled = false;
 
   // Config Options
