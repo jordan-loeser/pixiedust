@@ -58,6 +58,7 @@ class ConwaysGameOfLifeApplet extends Applet {
   async setup() {
     this.frame = 0;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.conways = [];
     this.layers.forEach(async (options) => {
       const newConway = new ConwaysGameOfLife(this.ctx, options);
       await newConway.setup();
