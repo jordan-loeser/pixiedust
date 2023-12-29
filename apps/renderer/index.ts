@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { JSDOM } from "jsdom";
-import NYCTrainApplet, { Direction } from "nyctrainsign";
 import { Scheduler } from "pixiedust";
+import NYCTrainApplet, { Direction } from "nyctrainsign";
+import ConwaysGameOfLifeApplet from "conways-game-of-life";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -35,18 +36,6 @@ canvas.height = 32;
 
 const scheduler = new Scheduler();
 
-// const uptown23rd = new NYCTrainApplet(canvas, {
-//   stationId: "D18",
-//   direction: Direction.NORTH,
-// });
-// scheduler.register(uptown23rd);
-
-// const downtown23rd = new NYCTrainApplet(canvas, {
-//   stationId: "D18",
-//   direction: Direction.SOUTH,
-// });
-// scheduler.register(downtown23rd);
-
 const uptown18th = new NYCTrainApplet(canvas, {
   stationId: "131",
   direction: Direction.NORTH,
@@ -70,6 +59,9 @@ const downtown14th = new NYCTrainApplet(canvas, {
   direction: Direction.SOUTH,
 });
 scheduler.register(downtown14th);
+
+const conways = new ConwaysGameOfLifeApplet(canvas, { color: "#5500aa" });
+scheduler.register(conways);
 
 app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
