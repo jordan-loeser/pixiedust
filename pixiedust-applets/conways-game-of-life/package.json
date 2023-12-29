@@ -1,10 +1,11 @@
 {
-  "name": "conways-game-of-life",
+  "name": "@applets/conways-game-of-life",
   "version": "1.0.0",
   "description": "Simple rendering of the Mandelbrot set",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "dev": "tsc --watch",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

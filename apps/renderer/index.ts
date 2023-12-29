@@ -3,8 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import { JSDOM } from "jsdom";
 import { Scheduler } from "pixiedust";
-import NYCTrainApplet, { Direction } from "nyctrainsign";
-import ConwaysGameOfLifeApplet from "conways-game-of-life";
+import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
+import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -68,13 +68,14 @@ scheduler.register(conways);
 
 const conways2 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
+  compositeOperation: "screen",
   fadeOut: true,
 });
 scheduler.register(conways2);
 
 const conways3 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [
-    { cellSize: 2, cellColor: "red" },
+    { cellSize: 4, cellColor: "red" },
     { cellSize: 2, cellColor: "blue" },
   ],
   compositeOperation: "screen",

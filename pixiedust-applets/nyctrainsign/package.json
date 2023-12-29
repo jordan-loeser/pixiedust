@@ -1,10 +1,11 @@
 {
-  "name": "nyctrainsign",
+  "name": "@applets/nyctrainsign",
   "version": "1.0.0",
   "description": "Displays MTA train times for a single station.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "dev": "tsc --watch",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "script:stations": "python3 scripts/build-stations.py"
