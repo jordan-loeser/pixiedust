@@ -60,13 +60,13 @@ const scheduler = new Scheduler();
 // });
 // scheduler.register(downtown14th);
 
-const conways = new ConwaysGameOfLifeApplet(canvas, { color: "#5500aa" });
+const conways = new ConwaysGameOfLifeApplet(canvas);
 scheduler.register(conways);
 
 const conways2 = new ConwaysGameOfLifeApplet(canvas);
 scheduler.register(conways2);
 
-const conways3 = new ConwaysGameOfLifeApplet(canvas, { color: "pink" });
+const conways3 = new ConwaysGameOfLifeApplet(canvas);
 scheduler.register(conways3);
 
 app.get("/render", async (req, res) => {
