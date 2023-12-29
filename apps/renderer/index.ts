@@ -3,8 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import { JSDOM } from "jsdom";
 import { Scheduler } from "pixiedust";
-import NYCTrainApplet, { Direction } from "nyctrainsign";
-import ConwaysGameOfLifeApplet from "conways-game-of-life";
+import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
+import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)

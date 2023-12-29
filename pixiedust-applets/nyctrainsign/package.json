@@ -1,5 +1,5 @@
 {
-  "name": "nyctrainsign",
+  "name": "@applets/nyctrainsign",
   "version": "1.0.0",
   "description": "Displays MTA train times for a single station.",
   "main": "dist/index.js",
