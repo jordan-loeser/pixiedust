@@ -6,10 +6,12 @@ import {
 
 const DEFAULT_FRAME_RATE = 10;
 const DEFAULT_FRAME_COUNT = 70;
+const DEFAULT_LAYERS = [{}];
 
 type ConwaysGameOfLifeAppletSchema = {
   frameRate?: number;
   frameCount?: number;
+  layers?: ConwaysGameOfLifeOptions[];
 };
 
 class ConwaysGameOfLifeApplet extends Applet {
@@ -18,10 +20,10 @@ class ConwaysGameOfLifeApplet extends Applet {
 
   // Config Options
   private frameCount: number;
+  private layers: ConwaysGameOfLifeOptions[];
 
   // Components
-  private conway1?: ConwaysGameOfLife;
-  private conway2?: ConwaysGameOfLife;
+  private conways: ConwaysGameOfLife[] = [];
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -29,14 +31,17 @@ class ConwaysGameOfLifeApplet extends Applet {
   ) {
     super(canvas, config.frameRate ?? DEFAULT_FRAME_RATE);
     this.frameCount = config.frameCount ?? DEFAULT_FRAME_COUNT;
+    this.layers = config.layers ?? DEFAULT_LAYERS;
   }
 
   async setup() {
     this.frame = 0;
-    this.conway1 = new ConwaysGameOfLife(this.ctx, {});
-    await this.conway1.setup();
-    this.conway2 = new ConwaysGameOfLife(this.ctx, { cellColor: "blue" });
-    await this.conway2.setup();
+    this.layers.forEach(async (options) => {
+      const newConway = new ConwaysGameOfLife(this.ctx, options);
+      await newConway.setup();
+      this.conways.push(newConway);
+    });
+
     this.setupHasBeenCalled = true;
   }
 
@@ -44,11 +49,8 @@ class ConwaysGameOfLifeApplet extends Applet {
     if (!this.setupHasBeenCalled)
       throw new Error("Must call .setup() before drawing.");
 
-    if (!this.conway1 || !this.conway2) return;
-
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.conway1.draw();
-    this.conway2?.draw();
+    this.conways.forEach((conway) => conway.draw());
 
     // Stop animation after a certain number of frames
     this.frame += 1;
