@@ -5,6 +5,7 @@ import { JSDOM } from "jsdom";
 import { Scheduler } from "pixiedust";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
+import SpotifyApplet from "@applets/spotify";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -107,11 +108,15 @@ scheduler.register(conways3);
 // });
 // scheduler.register(conways4);
 
+const spotify = new SpotifyApplet(canvas);
+scheduler.register(spotify);
+
 app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
 
   if (req.query.format === "webp") {
     const webp = await applet.encodeAsWebP();
+    console.log("sending image");
     res.set("Content-Type", "image/webp");
     res.send(webp);
   } else {
