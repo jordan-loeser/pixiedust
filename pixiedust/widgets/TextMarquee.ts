@@ -1,6 +1,6 @@
 import Text, { TextOptions } from "./Text";
 
-const DEBUG = !true;
+const DEBUG = true;
 
 type PixelColors = Record<"0" | "1" | "2", string | null>;
 
@@ -76,6 +76,7 @@ export class TextMarquee extends Text {
   }
 
   drawBoundingBox() {
+    console.log("DRAWBOUNDINGBOX");
     if (!this.isReady || !this.width || !this.height)
       throw new Error("Must call .setup() before calling .drawBoundingBox()!");
 
