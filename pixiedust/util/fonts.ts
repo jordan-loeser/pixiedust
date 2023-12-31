@@ -12,10 +12,13 @@ export enum Font {
 }
 
 const fontPaths: Record<Font, string> = {
-  [Font.BITOCRA]: "bitocra/bitocra.bdf",
-  [Font.CHERRY]: "cherry/cherry-11-r.bdf",
-  [Font.MONO]: "CG-pixel-3x5-mono.bdf",
+  // Custom Fonts
   [Font.ARRIVAL_TIME]: "custom/arrival-time/arrival-time-13.bdf",
+  // From pixlet
+  [Font.MONO]: "pixlet/CG-pixel-3x5-mono.bdf",
+  // From bitmap-fonts
+  [Font.BITOCRA]: "bitmap-fonts/bitmap/bitocra/bitocra.bdf",
+  [Font.CHERRY]: "bitmap-fonts/bitmap/cherry/cherry-11-r.bdf",
 };
 
 export const loadFont = async (font: Font) => {
