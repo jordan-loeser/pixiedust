@@ -1,0 +1,3 @@
+[submodule "pixiedust/fonts/bitmap-fonts"]
+	path = pixiedust/fonts/bitmap-fonts
+	url = https://github.com/masaeedu/bitmap-fonts

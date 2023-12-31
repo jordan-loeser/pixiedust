@@ -60,28 +60,52 @@ const scheduler = new Scheduler();
 // });
 // scheduler.register(downtown14th);
 
-const conways = new ConwaysGameOfLifeApplet(canvas, {
-  layers: [{ cellColor: "#5500aa" }],
-  fadeOut: true,
-});
-scheduler.register(conways);
+// const conways = new ConwaysGameOfLifeApplet(canvas, {
+//   layers: [{ cellColor: "#5500aa" }],
+//   fadeOut: true,
+// });
+// scheduler.register(conways);
 
-const conways2 = new ConwaysGameOfLifeApplet(canvas, {
-  layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
-  compositeOperation: "screen",
-  fadeOut: true,
-});
-scheduler.register(conways2);
+// const conways2 = new ConwaysGameOfLifeApplet(canvas, {
+//   layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
+//   compositeOperation: "screen",
+//   fadeOut: true,
+// });
+// scheduler.register(conways2);
 
-const conways3 = new ConwaysGameOfLifeApplet(canvas, {
-  layers: [
-    { cellSize: 4, cellColor: "red" },
-    { cellSize: 2, cellColor: "blue" },
-  ],
-  compositeOperation: "screen",
-  frameCount: 50,
-});
-scheduler.register(conways3);
+// const conways3 = new ConwaysGameOfLifeApplet(canvas, {
+//   layers: [
+//     { cellSize: 4, cellColor: "red" },
+//     { cellSize: 2, cellColor: "blue" },
+//   ],
+//   compositeOperation: "screen",
+//   frameCount: 50,
+// });
+// scheduler.register(conways3);
+
+// const conways4 = new ConwaysGameOfLifeApplet(canvas, {
+//   layers: [
+//     { cellSize: 2, cellColor: "pink" },
+//     { cellSize: 1, cellColor: "purple" },
+//     // { cellSize: 2, cellColor: "blue" },
+//   ],
+//   compositeOperation: "hard-light",
+//   frameCount: 50,
+// });
+// scheduler.register(conways4);
+
+// const conways4 = new ConwaysGameOfLifeApplet(canvas, {
+//   layers: [
+//     { cellSize: 1, cellColor: "rgb(255,0,0)" },
+//     { cellSize: 1, cellColor: "rgb(0,255,0)" },
+//     { cellSize: 1, cellColor: "rgb(0,0,255)" },
+//     // { cellSize: 1, cellColor: "purple" },
+//     // { cellSize: 2, cellColor: "blue" },
+//   ],
+//   compositeOperation: "lighter",
+//   frameCount: 50,
+// });
+// scheduler.register(conways4);
 
 app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
