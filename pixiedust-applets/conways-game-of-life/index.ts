@@ -4,8 +4,10 @@ import {
   ConwaysGameOfLifeOptions,
 } from "./widgets/ConwaysGameOfLife";
 
+// Default configs
 const DEFAULT_FRAME_RATE = 10;
 const DEFAULT_FRAME_COUNT = 70;
+const DEFAULT_FADE_OUT = false;
 const DEFAULT_FADE_DURATION = 10;
 const DEFAULT_LAYERS = [{}];
 
@@ -43,7 +45,7 @@ class ConwaysGameOfLifeApplet extends Applet {
     super(canvas, config.frameRate ?? DEFAULT_FRAME_RATE);
     this.frameCount = config.frameCount ?? DEFAULT_FRAME_COUNT;
     this.layers = config.layers ?? DEFAULT_LAYERS;
-    this.fadeOut = config.fadeOut ?? true;
+    this.fadeOut = config.fadeOut ?? DEFAULT_FADE_OUT;
     this.fadeDuration = config.fadeDuration ?? DEFAULT_FADE_DURATION;
     if (config.compositeOperation)
       this.compositeOperation = config.compositeOperation;
