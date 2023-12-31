@@ -36,52 +36,52 @@ canvas.height = 32;
 
 const scheduler = new Scheduler();
 
-// const uptown18th = new NYCTrainApplet(canvas, {
-//   stationId: "131",
-//   direction: Direction.NORTH,
-// });
-// scheduler.register(uptown18th);
+const uptown18th = new NYCTrainApplet(canvas, {
+  stationId: "131",
+  direction: Direction.NORTH,
+});
+scheduler.register(uptown18th);
 
-// const downtown18th = new NYCTrainApplet(canvas, {
-//   stationId: "131",
-//   direction: Direction.SOUTH,
-// });
-// scheduler.register(downtown18th);
+const downtown18th = new NYCTrainApplet(canvas, {
+  stationId: "131",
+  direction: Direction.SOUTH,
+});
+scheduler.register(downtown18th);
 
-// const uptown14th = new NYCTrainApplet(canvas, {
-//   stationId: "A31",
-//   direction: Direction.NORTH,
-// });
-// scheduler.register(uptown14th);
+const conways2 = new ConwaysGameOfLifeApplet(canvas, {
+  layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
+  compositeOperation: "screen",
+  fadeOut: true,
+});
+scheduler.register(conways2);
 
-// const downtown14th = new NYCTrainApplet(canvas, {
-//   stationId: "A31",
-//   direction: Direction.SOUTH,
-// });
-// scheduler.register(downtown14th);
+const uptown14th = new NYCTrainApplet(canvas, {
+  stationId: "A31",
+  direction: Direction.NORTH,
+});
+scheduler.register(uptown14th);
+
+const downtown14th = new NYCTrainApplet(canvas, {
+  stationId: "A31",
+  direction: Direction.SOUTH,
+});
+scheduler.register(downtown14th);
+
+const conways3 = new ConwaysGameOfLifeApplet(canvas, {
+  layers: [
+    { cellSize: 4, cellColor: "red" },
+    { cellSize: 2, cellColor: "blue" },
+  ],
+  compositeOperation: "screen",
+  frameCount: 50,
+});
+scheduler.register(conways3);
 
 // const conways = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [{ cellColor: "#5500aa" }],
 //   fadeOut: true,
 // });
 // scheduler.register(conways);
-
-// const conways2 = new ConwaysGameOfLifeApplet(canvas, {
-//   layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
-//   compositeOperation: "screen",
-//   fadeOut: true,
-// });
-// scheduler.register(conways2);
-
-// const conways3 = new ConwaysGameOfLifeApplet(canvas, {
-//   layers: [
-//     { cellSize: 4, cellColor: "red" },
-//     { cellSize: 2, cellColor: "blue" },
-//   ],
-//   compositeOperation: "screen",
-//   frameCount: 50,
-// });
-// scheduler.register(conways3);
 
 // const conways4 = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [
