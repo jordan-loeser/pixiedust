@@ -1,20 +1,18 @@
 import { Image } from "canvas";
 import { Applet, Font, TextMarquee } from "pixiedust";
 
-const HOLD_DURATION_S = 2;
-
 // Configuration Defaults
+const HOLD_DURATION_S = 2;
 const DEFAULT_DURATION_S = 10;
 
 // Styling
-const PADDING = 1;
+const PADDING = 2;
 
 // Test Data
 const ALBUM_COVER_IMAGE_URL =
   "https://i.scdn.co/image/ab67616d0000485101855acd3dd4019f7e367df8";
 const SONG_NAME = "A Song Name that is really really long";
-const ARTIST_NAME = "iyEvanescence";
-const ALBUM_NAME = "iySome album name that is really really long";
+const ARTIST_NAME = "Evanescence";
 
 type SpotifyAppletSchema = {
   duration?: number; // seconds
@@ -31,7 +29,6 @@ class SpotifyApplet extends Applet {
   private albumCover: Image;
   private songName?: TextMarquee;
   private artistName?: TextMarquee;
-  private albumName?: TextMarquee;
 
   constructor(canvas: HTMLCanvasElement, config: SpotifyAppletSchema = {}) {
     super(canvas);
@@ -41,12 +38,14 @@ class SpotifyApplet extends Applet {
   }
 
   async setup(): Promise<void> {
+    this.frame = 0;
+
     // Initialize marquees
     this.songName = new TextMarquee(SONG_NAME, this.ctx, {
-      font: Font.CHERRY,
-      x: this.canvas.height,
-      y: PADDING,
-      width: this.canvas.width - this.canvas.height - PADDING,
+      font: Font.ARRIVAL_TIME,
+      x: this.canvas.height + 1,
+      y: PADDING + 1,
+      width: this.canvas.width - this.canvas.height - PADDING - 1,
       pixelColors: {
         "0": null, // background
         "1": "#bfff50", // foreground
@@ -56,10 +55,10 @@ class SpotifyApplet extends Applet {
     await this.songName.setup();
 
     this.artistName = new TextMarquee(ARTIST_NAME, this.ctx, {
-      font: Font.CHERRY,
-      x: this.canvas.height,
-      y: PADDING + this.songName.height!,
-      width: this.canvas.width - this.canvas.height - PADDING,
+      font: Font.DINA,
+      x: this.canvas.height + 1,
+      y: PADDING + this.songName.height! + 1,
+      width: this.canvas.width - this.canvas.height - PADDING - 1,
       pixelColors: {
         "0": null, // background
         "1": "#FFF", // foreground
@@ -67,19 +66,6 @@ class SpotifyApplet extends Applet {
       },
     });
     await this.artistName.setup();
-
-    this.albumName = new TextMarquee(ALBUM_NAME, this.ctx, {
-      font: Font.CHERRY,
-      x: this.canvas.height,
-      y: PADDING + this.songName.height! + this.artistName.height!,
-      width: this.canvas.width - this.canvas.height - PADDING,
-      pixelColors: {
-        "0": null, // background
-        "1": "#fff", // foreground
-        "2": "null", // glow
-      },
-    });
-    await this.albumName.setup();
 
     // Load album cover image
     this.albumCover.src = ALBUM_COVER_IMAGE_URL;
@@ -95,30 +81,33 @@ class SpotifyApplet extends Applet {
     if (!this.setupHasBeenCalled)
       throw new Error("Must call .setup() before drawing.");
 
-    // Clear the text on the previous frame
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    if (this.frame === 0) {
+      // Draw the image on the first frame
+      this.ctx.drawImage(
+        this.albumCover as any,
+        PADDING,
+        PADDING,
+        this.canvas.height - 2 * PADDING,
+        this.canvas.height - 2 * PADDING
+      );
+    }
 
-    // // Draw the image on the first frame
-    // this.ctx.drawImage(
-    //   this.albumCover as any,
-    //   PADDING,
-    //   PADDING,
-    //   this.canvas.height - 2 * PADDING,
-    //   this.canvas.height - 2 * PADDING
-    // );
-
-    const isHolding = this.frame <= this.durationToFrames(HOLD_DURATION_S);
+    // Clear the text on the previous frame, leave the image to prevent flickering
+    this.ctx.clearRect(
+      this.ctx.canvas.height,
+      0,
+      this.ctx.canvas.width - this.ctx.canvas.height,
+      this.ctx.canvas.height
+    );
 
     // Hold the text for 20 frames then scroll
+    const isHolding = this.frame <= this.durationToFrames(HOLD_DURATION_S);
     this.songName?.scrollAndDraw(isHolding || this.songName.isDone ? 0 : 1);
     this.artistName?.scrollAndDraw(isHolding || this.artistName.isDone ? 0 : 1);
-    this.albumName?.scrollAndDraw(isHolding || this.albumName.isDone ? 0 : 1);
 
     // Stop animation after duration
     this.frame += 1;
     this.isDone = this.frame / this.frameRate > this.duration;
-
-    console.log(">>DRAW FRAMEs", this.isDone);
   }
 
   durationToFrames(duration: number): number {
