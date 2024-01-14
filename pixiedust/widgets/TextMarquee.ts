@@ -1,6 +1,6 @@
 import Text, { TextOptions } from "./Text";
 
-const DEBUG = true;
+const DEBUG = false; // TODO: make env var
 
 type PixelColors = Record<"0" | "1" | "2", string | null>;
 

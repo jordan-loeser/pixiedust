@@ -2,7 +2,7 @@ import { Bitmap, Font as BDFFont } from "bdfparser";
 import { Font, loadFont } from "../util/fonts";
 import Widget, { WidgetOptions } from "./Widget";
 
-const DEBUG = true;
+const DEBUG = false; // TODO: make env var
 
 export type PixelColors = Record<"0" | "1" | "2", string | null>;
 
