@@ -8,11 +8,12 @@ const DEFAULT_DURATION_S = 10;
 // Styling
 const PADDING = 2;
 
-// Test Data
+// Test Data // TODO: pull during setup
 const ALBUM_COVER_IMAGE_URL =
-  "https://i.scdn.co/image/ab67616d0000485101855acd3dd4019f7e367df8";
-const SONG_NAME = "A Song Name that is really really long";
+  "https://upload.wikimedia.org/wikipedia/en/2/25/Evanescence_-_Fallen.png";
+const SONG_NAME = "Bring Me to Life";
 const ARTIST_NAME = "Evanescence";
+const PERCENT_PLAYED = 0.5;
 
 type SpotifyAppletSchema = {
   duration?: number; // seconds
@@ -44,7 +45,7 @@ class SpotifyApplet extends Applet {
     this.songName = new TextMarquee(SONG_NAME, this.ctx, {
       font: Font.ARRIVAL_TIME,
       x: this.canvas.height + 1,
-      y: PADDING + 1,
+      y: PADDING + 2,
       width: this.canvas.width - this.canvas.height - PADDING - 1,
       pixelColors: {
         "0": null, // background
@@ -57,7 +58,7 @@ class SpotifyApplet extends Applet {
     this.artistName = new TextMarquee(ARTIST_NAME, this.ctx, {
       font: Font.DINA,
       x: this.canvas.height + 1,
-      y: PADDING + this.songName.height! + 1,
+      y: PADDING + this.songName.height! + 2,
       width: this.canvas.width - this.canvas.height - PADDING - 1,
       pixelColors: {
         "0": null, // background
@@ -94,16 +95,38 @@ class SpotifyApplet extends Applet {
 
     // Clear the text on the previous frame, leave the image to prevent flickering
     this.ctx.clearRect(
-      this.ctx.canvas.height,
+      this.canvas.height,
       0,
-      this.ctx.canvas.width - this.ctx.canvas.height,
-      this.ctx.canvas.height
+      this.canvas.width - this.canvas.height,
+      this.canvas.height
     );
 
     // Hold the text for 20 frames then scroll
     const isHolding = this.frame <= this.durationToFrames(HOLD_DURATION_S);
     this.songName?.scrollAndDraw(isHolding || this.songName.isDone ? 0 : 1);
     this.artistName?.scrollAndDraw(isHolding || this.artistName.isDone ? 0 : 1);
+
+    // Draw the progress indicator
+    this.ctx.save();
+    const progressBarWidth = this.canvas.width - this.canvas.height - PADDING; // full width minus padding and image
+    // Background bar
+    this.ctx.fillStyle = "#aaaaaa";
+    this.ctx.fillRect(
+      this.canvas.height,
+      this.canvas.height - PADDING - 1,
+      progressBarWidth,
+      1
+    );
+    // Foreground bar
+    this.ctx.fillStyle = "#bfff50";
+    this.ctx.fillRect(
+      this.canvas.height,
+      this.canvas.height - PADDING - 1,
+      progressBarWidth * PERCENT_PLAYED,
+      1
+    );
+
+    this.ctx.restore();
 
     // Stop animation after duration
     this.frame += 1;
