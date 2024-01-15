@@ -13,7 +13,8 @@ const ALBUM_COVER_IMAGE_URL =
   "https://upload.wikimedia.org/wikipedia/en/2/25/Evanescence_-_Fallen.png";
 const SONG_NAME = "Bring Me to Life";
 const ARTIST_NAME = "Evanescence";
-const PERCENT_PLAYED = 0.5;
+const PROGRESS_S = 2;
+const DURATION_S = 10;
 
 type SpotifyAppletSchema = {
   duration?: number; // seconds
@@ -109,6 +110,10 @@ class SpotifyApplet extends Applet {
     // Draw the progress indicator
     this.ctx.save();
     const progressBarWidth = this.canvas.width - this.canvas.height - PADDING; // full width minus padding and image
+    const percentComplete = Math.min(
+      (PROGRESS_S + this.frame / this.frameRate) / DURATION_S,
+      1.0
+    );
     // Background bar
     this.ctx.fillStyle = "#aaaaaa";
     this.ctx.fillRect(
@@ -122,7 +127,7 @@ class SpotifyApplet extends Applet {
     this.ctx.fillRect(
       this.canvas.height,
       this.canvas.height - PADDING - 1,
-      progressBarWidth * PERCENT_PLAYED,
+      progressBarWidth,
       1
     );
 
