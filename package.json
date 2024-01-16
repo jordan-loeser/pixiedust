@@ -4,7 +4,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "turbo run build",
-    "dev": "turbo run dev --no-cache --continue",
+    "dev": "dotenv $(printf -- '-e %s ' $(find . -type f -name '.env.local')) -- turbo run dev",
     "test": "turbo run test",
     "docker:build": "docker build -t pixiedust .",
     "docker:run": "docker run -p 3000:3000 pixiedust",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
+    "dotenv-cli": "^7.3.0",
     "husky": "^8.0.3",
     "turbo": "^1.10.14"
   }

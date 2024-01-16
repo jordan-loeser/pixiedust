@@ -38,7 +38,7 @@ export class ConwaysGameOfLife extends Widget {
     this.setupHasBeenCalled = true;
   }
 
-  // TODO: make this a pixiedust helper
+  // TODO: make this an applet class
   drawGrid() {
     for (let i = 0; i < this.numRows; i++) {
       for (let j = 0; j < this.numCols; j++) {

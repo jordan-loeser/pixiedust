@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc && yarn load-fonts && yarn copy-assets",
     "load-fonts": "git submodule update --init --recursive",
+    "dev": "yarn copy-assets && tsc --watch",
     "copy-assets": "cp -r ./fonts ./dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
