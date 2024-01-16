@@ -2,8 +2,6 @@ import { Bitmap, Font as BDFFont } from "bdfparser";
 import { Font, loadFont } from "../util/fonts";
 import Widget, { WidgetOptions } from "./Widget";
 
-const DEBUG = false; // TODO: make env var
-
 export type PixelColors = Record<"0" | "1" | "2", string | null>;
 
 export enum TextAlignment {
@@ -77,7 +75,7 @@ export class Text extends Widget {
     this.ctx.save();
 
     // Draw bounding box
-    if (DEBUG) this.drawBoundingBox();
+    if (process.env.DEBUG) this.drawBoundingBox();
 
     let cropParams = [this.width, this.height, 0 as number] as const;
     let translation = [this.x, this.y] as const;

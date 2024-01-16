@@ -19,8 +19,6 @@ const arrivalTimeDifference = (a: Train, b: Train) =>
 //   "A31", // 14th St / 8 Av
 // ];
 
-const API_URL = "https://api.wheresthefuckingtrain.com"; // TODO: make secret
-
 export const getTerminal = (route: Route, direction: Direction) => {
   const terminals = (LAST_STOPS as LastStop)[route];
   if (!terminals) throw new Error(`Terminal not found for route: ${route}`);
@@ -60,7 +58,9 @@ export const isStale = (res: WTFStationResponse) => {
 };
 
 export const fetchStation = async (stationId: Station["id"]) => {
-  const res = await fetch(`${API_URL}/by-id/${stationId}`);
+  if (!process.env.MTAPI_URL) throw new Error("Missing MTAPI_URL");
+
+  const res = await fetch(`${process.env.MTAPI_URL}/by-id/${stationId}`);
 
   const json = await res.json();
 

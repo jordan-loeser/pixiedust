@@ -18,7 +18,7 @@ const YELLOW = "#fccc0a";
 const DARK_SLATE_GRAY = "#808183";
 const LIGHT_SLATE_GRAY = "#a7a9ac";
 
-// Scraped from https://api.wheresthefuckingtrain.com/routes
+// Scraped from MTAPI
 export const ROUTE_METADATA: Record<Route, RouteMetaData> = {
   "1": { color: RED },
   "2": { color: RED },

@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "script:stations": "python3 scripts/build-stations.py"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jordan Loeser",
   "license": "ISC",

@@ -1,7 +1,5 @@
 import Text, { TextOptions } from "./Text";
 
-const DEBUG = false; // TODO: make env var
-
 type PixelColors = Record<"0" | "1" | "2", string | null>;
 
 type ScrollDirection = "horizontal"; // | "vertical"; // TODO
@@ -47,7 +45,7 @@ export class TextMarquee extends Text {
     this.ctx.save();
 
     // Draw bounding box
-    if (DEBUG) this.drawBoundingBox();
+    if (process.env.DEBUG) this.drawBoundingBox();
 
     // Facilitate translation
     this.offset += amount;
