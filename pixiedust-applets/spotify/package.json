@@ -12,6 +12,7 @@
   "author": "Jordan Loeser",
   "license": "ISC",
   "dependencies": {
+    "@spotify/web-api-ts-sdk": "^1.1.2",
     "pixiedust": "*"
   },
   "devDependencies": {

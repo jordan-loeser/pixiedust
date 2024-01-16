@@ -116,7 +116,6 @@ app.get("/render", async (req, res) => {
 
   if (req.query.format === "webp") {
     const webp = await applet.encodeAsWebP();
-    console.log("sending image");
     res.set("Content-Type", "image/webp");
     res.send(webp);
   } else {
