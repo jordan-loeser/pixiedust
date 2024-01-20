@@ -1,0 +1,8 @@
+.pio
+.vscode
+
+# macos
+.DS_Store
+
+# secrests
+secrets.h
