@@ -15,7 +15,6 @@
   "dependencies": {
     "@applets/conways-game-of-life": "*",
     "@applets/nyctrainsign": "*",
-    "@applets/spotify": "*",
     "canvas": "^2.11.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
