@@ -5,7 +5,6 @@ import { JSDOM } from "jsdom";
 import { Scheduler } from "pixiedust";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
-import SpotifyApplet from "@applets/spotify";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -107,9 +106,6 @@ scheduler.register(conways3);
 //   frameCount: 50,
 // });
 // scheduler.register(conways4);
-
-const spotify = new SpotifyApplet(canvas);
-scheduler.register(spotify);
 
 app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
