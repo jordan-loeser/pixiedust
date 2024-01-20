@@ -2,6 +2,7 @@
   "name": "pixiedust-turborepo",
   "version": "1.0.0",
   "scripts": {
+    "commit": "cz",
     "prepare": "husky install",
     "build": "turbo run build",
     "dev": "dotenv $(printf -- '-e %s ' $(find . -type f -name '.env.local')) -- turbo run dev",
@@ -20,8 +21,10 @@
   ],
   "private": true,
   "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
+    "@commitlint/cz-commitlint": "^18.4.4",
     "commitizen": "^4.3.0",
-    "cz-conventional-changelog": "^3.3.0",
     "dotenv-cli": "^7.3.0",
     "husky": "^8.0.3",
     "turbo": "^1.10.14"
