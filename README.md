@@ -1,15 +1,18 @@
 # ✨🧚‍♀️ pixiedust
 
+### A web-rooted approach to creating graphics for pixel-based displays, such as LED matrices.
+
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white) [![Turborepo](https://img.shields.io/badge/Turborepo-%230F0813.svg?style=flat&logo=Turborepo)](https://turbo.build/) ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=flat&logo=google-cloud&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat)](http://commitizen.github.io/cz-cli/)
 
-Pixiedust makes it easy to use HTML canvas to generate graphics for pixel-based displays, such as LED matrices. For firmware to display webp images on an [Adafruit MatrixPortal](https://www.adafruit.com/product/5778), see [✨🧚‍♂️ pixiedust-hdk]().
+## Monorepo Packages
 
-| Workspace                                 | Description                                                                 |
-| ----------------------------------------- | --------------------------------------------------------------------------- |
-| [Pixiedust Library](./pixiedust)          | Contains helper classes for rendering graphics.                             |
-| [Pixiedust Applets](./pixiedust-applets/) | Contains applets that use pixiedust to render a specific graphic.           |
-| [Renderer](./apps/renderer)               | An Express server to render applets into animated `.webp` or `.gif` images. |
-| [Preview Tool](./apps/preview-tool)       | A helper tool to preview pixiedust applets.                                 |
+| Workspace                                 | Description                                                                                                           |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| [Pixiedust Library](./pixiedust)          | Contains helper classes for rendering graphics.                                                                       |
+| [Pixiedust Applets](./pixiedust-applets/) | Contains applets that use pixiedust to render a specific graphic.                                                     |
+| [Renderer](./apps/renderer)               | An Express server to render applets into animated `.webp` or `.gif` images.                                           |
+| [Preview Tool](./apps/preview-tool)       | A helper tool to preview rendered pixiedust applets.                                                                  |
+| [Firmware](./firmware)                    | A PlatformIO project to display animated images on an [Adafruit MatrixPortal](https://www.adafruit.com/product/5778). |
 
 ### Getting Started
 
