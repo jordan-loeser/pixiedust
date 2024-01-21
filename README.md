@@ -1,28 +1,42 @@
-# ✨🧚‍♀️ pixiedust
+<h1 align="center">
+  <br>
+  ✨🧚‍♀️
+  <br>
+  pixiedust
+  <br>
+</h1>
 
-### A web-rooted approach to creating graphics for pixel-based displays, such as LED matrices.
+<h4 align="center">A web-rooted approach to creating graphics for pixel-based displays, such as LED matrices.</h4>
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white) [![Turborepo](https://img.shields.io/badge/Turborepo-%230F0813.svg?style=flat&logo=Turborepo)](https://turbo.build/) ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=flat&logo=google-cloud&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat)](http://commitizen.github.io/cz-cli/)
+<p align="center">
+<img alt="GitHub License" src="https://img.shields.io/github/license/jordan-loeser/pixiedust?style=flat">
+    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/jordan-loeser/pixiedust?style=flat">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/jordan-loeser/pixiedust?style=flat">
+    <img alt="Commitizen Friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat">
+</p>
+<img src="./pixiedust-applets/nyctrainsign/docs/preview.gif" width="100%"/>
 
-## Monorepo Packages
+## Project Structure
+
+This repository is a turbo-enabled monorepo with the following workspaces
 
 | Workspace                                 | Description                                                                                                           |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [Pixiedust Library](./pixiedust)          | Contains helper classes for rendering graphics.                                                                       |
+| [Pixiedust Library](./pixiedust)          | A typescript library for rendering graphics.                                                                          |
 | [Pixiedust Applets](./pixiedust-applets/) | Contains applets that use pixiedust to render a specific graphic.                                                     |
 | [Renderer](./apps/renderer)               | An Express server to render applets into animated `.webp` or `.gif` images.                                           |
 | [Preview Tool](./apps/preview-tool)       | A helper tool to preview rendered pixiedust applets.                                                                  |
 | [Firmware](./firmware)                    | A PlatformIO project to display animated images on an [Adafruit MatrixPortal](https://www.adafruit.com/product/5778). |
 
-### Getting Started
+## Getting Started
 
-Pixiedust is a turbo-enabled monorepo. To run all packages:
+To run all workspaces:
 
 ```
 $ yarn install
 $ yarn dev
 ```
 
-### Acknowledgements
+## Acknowledgements
 
 The pixiedust approach to rendering is heavily inspired by [pixlet](https://github.com/tidbyt/pixlet), created by the team doing great work at [Tidbyt](https://tidbyt.com/). Check them out!
