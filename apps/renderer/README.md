@@ -5,7 +5,7 @@
 An Express server that can render pixiedust applets as animated `.webp` or `.gif` files.
 
 > [!NOTE]  
-> The applet scheduler is currently hard-coded to rotate through a select set of NYC subway stations.
+> The applet scheduler is currently hard-coded to rotate through a select set of NYC subway stations. To deploy your own applet schedule, fork this repository and modify the list of applets registered in index.ts.
 
 ### Endpoints
 
