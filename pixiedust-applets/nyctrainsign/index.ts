@@ -9,6 +9,9 @@ type NYCTrainAppletSchema = {
 };
 
 class NYCTrainApplet extends Applet {
+  // Abstract
+  public isDone = false;
+
   // Config Options
   private stationId: Station["id"];
   private direction: Direction;

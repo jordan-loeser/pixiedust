@@ -21,7 +21,8 @@ type ConwaysGameOfLifeAppletSchema = {
 };
 
 class ConwaysGameOfLifeApplet extends Applet {
-  private frame: number = 0;
+  // Abstract
+  public isDone = false;
 
   // Config Options
   private frameCount: number;
@@ -31,6 +32,7 @@ class ConwaysGameOfLifeApplet extends Applet {
   private compositeOperation?: CanvasRenderingContext2D["globalCompositeOperation"];
 
   // Helpers
+  private frame: number = 0;
   private framesToAnimate: number;
   private sliceAlpha: number;
 

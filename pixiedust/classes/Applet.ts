@@ -6,6 +6,11 @@ const DEFAULT_FRAME_RATE = 20; // fps
 
 interface AppletInterface {
   /**
+   * Abstract member variable to flag when rendering is complete.
+   */
+  isDone: boolean;
+
+  /**
    * Abstract method that must be implemented by derived applets for initialization.
    */
   setup(): Promise<void>;
@@ -20,16 +25,17 @@ interface AppletInterface {
  * Abstract class representing the foundation for creating animated applets on an HTML canvas.
  */
 export abstract class Applet implements AppletInterface {
-  protected canvas: HTMLCanvasElement;
+  abstract isDone: boolean;
+  abstract setup(): Promise<void>;
+  abstract draw(): void;
 
+  protected canvas: HTMLCanvasElement;
   protected ctx: CanvasRenderingContext2D;
 
   /**
    * Frames per second for the applet animation.
    */
   protected frameRate: number;
-
-  protected isDone: boolean = false;
 
   /**
    * Frames duration in ms, derived from frameRate.
@@ -60,10 +66,6 @@ export abstract class Applet implements AppletInterface {
     this.frameRate = frameRate;
     this.frameDuration = 1000 / frameRate;
   }
-
-  // Abstract methods
-  abstract setup(): Promise<void>;
-  abstract draw(): void;
 
   /**
    * Clears the canvas and calls the abstract setup function.
