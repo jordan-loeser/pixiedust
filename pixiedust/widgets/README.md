@@ -6,4 +6,12 @@ Users can customize the position of the widget by passing WidgetOptions during i
 
 ## Text
 
+Renders static string of text using configurable position and font.
+
+<img src="../docs/text.gif" width="512px"/>
+
 ## TextMarquee
+
+Renders scrolling string of text using configurable position and font.
+
+<img src="../docs/text-marquee.gif" width="512px"/>
