@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-<h4 align="center">A web-rooted approach to creating graphics for pixel-based displays, such as LED matrices.</h4>
+<h4 align="center">A web-based approach to creating graphics for pixel-based displays, such as LED matrices.</h4>
 
 <p align="center">
 <img alt="GitHub License" src="https://img.shields.io/github/license/jordan-loeser/pixiedust?style=flat">
