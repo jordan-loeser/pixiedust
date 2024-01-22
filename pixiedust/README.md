@@ -19,6 +19,8 @@ type CountingAppletConfig = {
 };
 
 class CountingApplet extends Applet {
+  public isDone: number = false;
+
   private max: number;
   private current: number = 0;
 
@@ -37,6 +39,11 @@ class CountingApplet extends Applet {
     // Whatever you need to do draw on the HTML canvas!
     someFunctionToDrawTheCurrentValue(this.current);
     this.current += 1;
+
+    // Indicate that the applet is done rendering
+    if (this.current > this.max) {
+      this.isDone = true;
+    }
   }
 }
 
