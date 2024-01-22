@@ -60,7 +60,7 @@ Example usage:
 
 ```ts
 import { Scheduler } from "pixiedust";
-import { CountingApplet } fom "@pixiedust-applets/counting-applet;
+import { CountingApplet } fom "@pixiedust-applets/counting-applet";
 
 // Create a Scheduler instance
 const scheduler = new Scheduler();
@@ -77,3 +77,7 @@ for (let i = 0; i < numberOfAppletsToPlay; i++) {
   currentApplet.play();
 }
 ```
+
+## Util
+
+Contains helper functions that may be useful in your applets,
