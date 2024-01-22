@@ -1,0 +1,21 @@
+import { Applet } from "pixiedust";
+
+class {{properCase name}}Applet extends Applet {
+  // Abstract
+  public isDone = false;
+
+  constructor(canvas: HTMLCanvasElement) {
+    super(canvas);
+  }
+
+  async setup() {
+    // Perform necessary setup
+  }
+
+  draw() {
+    // Perform necessary setup
+    // Remember to set this.isDone = true!
+  }
+}
+
+export default {{properCase name}}Applet;

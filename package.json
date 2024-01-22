@@ -9,7 +9,8 @@
     "test": "turbo run test",
     "docker:build": "docker build -t pixiedust .",
     "docker:run": "docker run -p 3000:3000 pixiedust",
-    "docker:explore": "docker run --rm -it --entrypoint=/bin/bash pixiedust"
+    "docker:explore": "docker run --rm -it --entrypoint=/bin/bash pixiedust",
+    "generate:applet": "turbo gen applet"
   },
   "workspaces": [
     "apps/*",
@@ -30,5 +31,8 @@
     "eslint-plugin-tsdoc": "^0.2.17",
     "husky": "^8.0.3",
     "turbo": "^1.10.14"
+  },
+  "dependencies": {
+    "@turbo/gen": "^1.11.3"
   }
 }
