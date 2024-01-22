@@ -1,8 +1,8 @@
 import GIFEncoder from "gif-encoder";
 import WebP from "node-webpmux";
-import { gammaCorrect } from "../util/gammaCorrect";
 
 const DEFAULT_FRAME_RATE = 20; // fps
+const DEFAULT_GAMMA = 2.8; // Correction factor
 
 interface AppletInterface {
   /**
@@ -108,7 +108,7 @@ export abstract class Applet implements AppletInterface {
     while (!this.isDone) {
       this.draw();
 
-      const pixels = gammaCorrect(
+      const pixels = Applet.gammaCorrect(
         this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
       );
 
@@ -167,7 +167,7 @@ export abstract class Applet implements AppletInterface {
 
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     const canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const pixels = gammaCorrect(canvasImageData);
+    const pixels = Applet.gammaCorrect(canvasImageData);
 
     const img = await WebP.Image.getEmptyImage();
     await img.setImageData(Buffer.from(pixels), {
@@ -181,6 +181,18 @@ export abstract class Applet implements AppletInterface {
     const frame = await WebP.Image.generateFrame({ img });
     return frame;
   }
+
+  /**
+   * Applies gamma coreection to ImageData and returns the corrected ImageData["data"]. Learn more about why gamma correction is needed {@link https://learn.adafruit.com/led-tricks-gamma-correction | here}.
+   * @param imageData - the image data to be corrected.
+   * @param gamma the correction factor (default is 2.8)
+   * @returns
+   */
+  static gammaCorrect = (
+    imageData: ImageData,
+    gamma = DEFAULT_GAMMA
+  ): ImageData["data"] =>
+    imageData.data.map((d) => Math.pow(d / 255, gamma) * 255 + 0.5);
 }
 
 export default Applet;

@@ -1,4 +1,3 @@
-export * from "./classes/Applet";
-export * from "./classes/Scheduler";
+export * from "./classes";
+export * from "./util";
 export * from "./widgets";
-export * from "./util/fonts";

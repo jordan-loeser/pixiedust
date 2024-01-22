@@ -1,6 +1,6 @@
 import { Bitmap, Font as BDFFont } from "bdfparser";
 import { Font, loadFont } from "../util/fonts";
-import Widget, { WidgetOptions } from "./Widget";
+import Widget, { WidgetOptions } from "../classes/Widget";
 
 export type PixelColors = Record<"0" | "1" | "2", string | null>;
 
