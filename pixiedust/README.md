@@ -13,24 +13,34 @@ Example usage:
 ```ts
 import { Applet } from "pixiedust";
 
-class CountingApplet extends Applet {
-  private: max;
+type CountingAppletConfig = {
+  frameRate?: number;
+  max: number;
+};
 
-  constructor(canvas: HTMLCanvasElement, config: MyCustomAppletSchema = {}) {
+class CountingApplet extends Applet {
+  private max: number;
+  private current: number = 0;
+
+  constructor(canvas: HTMLCanvasElement, config: CountingAppletConfig) {
     // Initialize any priate variables, optionally passed through a config
     super(canvas, config.frameRate);
+    this.max = config.max;
   }
 
   async setup() {
-    // Custom initialization logic
+    // Any async setup required, such as pulling data or resetting private variables
+    this.current = 0;
   }
 
   draw() {
-    // Custom drawing logic for each frame
+    // Whatever you need to do draw on the HTML canvas!
+    someFunctionToDrawTheCurrentValue(this.current);
+    this.current += 1;
   }
 }
 
 const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
-const myApplet = new MyCustomApplet(canvas);
+const myApplet = new CountingApplet(canvas, { max: 7 });
 myApplet.play(); // Play the animated applet
 ```
