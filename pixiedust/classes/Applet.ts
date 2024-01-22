@@ -5,21 +5,47 @@ import { gammaCorrect } from "../util/gammaCorrect";
 const DEFAULT_FRAME_RATE = 20; // fps
 
 interface AppletInterface {
+  /**
+   * Abstract method that must be implemented by derived applets for initialization.
+   */
   setup(): Promise<void>;
+
+  /**
+   * Abstract method that must be implemented by derived applets to render the next frame on the canvas element.
+   */
   draw(): void;
 }
 
+/**
+ * Abstract class representing the foundation for creating animated applets on an HTML canvas.
+ */
 export abstract class Applet implements AppletInterface {
   protected canvas: HTMLCanvasElement;
+
   protected ctx: CanvasRenderingContext2D;
+
+  /**
+   * Frames per second for the applet animation.
+   */
+  protected frameRate: number;
+
   protected isDone: boolean = false;
 
-  public frameRate: number; // fps
+  /**
+   * Frames duration in ms, derived from frameRate.
+   */
+  private frameDuration;
 
-  private frameDuration; // ms
-
+  /**
+   * Track if {@link WebP.Image.initLib()} has been called for optimization.
+   */
   static isLibWebPInitialized = false;
 
+  /**
+   * Constructor for the Applet class.
+   * @param canvas - The HTML canvas element to render the applet.
+   * @param frameRate - Frames per second (default is 20 fps).
+   */
   constructor(
     canvas: HTMLCanvasElement,
     frameRate: number = DEFAULT_FRAME_RATE
@@ -35,15 +61,21 @@ export abstract class Applet implements AppletInterface {
     this.frameDuration = 1000 / frameRate;
   }
 
-  // Abstract functions must be implemented by the derived applets
+  // Abstract methods
   abstract setup(): Promise<void>;
   abstract draw(): void;
 
+  /**
+   * Clears the canvas and calls the abstract setup function.
+   */
   async reset() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     await this.setup();
   }
 
+  /**
+   * Plays the animated applet by repeatedly calling the draw method at the specified frame rate.
+   */
   async play() {
     await this.reset();
 
@@ -53,7 +85,11 @@ export abstract class Applet implements AppletInterface {
     }, this.frameDuration);
   }
 
-  async encodeAsGif(): Promise<Buffer | null> {
+  /**
+   * Encodes the applet as an animated GIF image.
+   * @returns A promise that resolves to a Buffer containing the encoded GIF.
+   */
+  async encodeAsGif(): Promise<Buffer> {
     await this.reset();
 
     // Initialize encoder
@@ -79,9 +115,19 @@ export abstract class Applet implements AppletInterface {
 
     // Write output
     encoder.finish();
-    return encoder.read();
+    const result = encoder.read();
+
+    if (result === null) {
+      throw new Error("Gif encoding returned empty result.");
+    }
+
+    return result;
   }
 
+  /**
+   * Encodes the applet as an animated WebP image.
+   * @returns A promise that resolves to a Buffer containing the encoded WebP.
+   */
   async encodeAsWebP(): Promise<Buffer> {
     await this.reset();
 
@@ -102,7 +148,12 @@ export abstract class Applet implements AppletInterface {
     });
   }
 
-  // Static Functions
+  /**
+   * Static function that generates a WebP frame from the given canvas.
+   * @param canvas - The HTML canvas element.
+   * @param lossless - Lossless compression level for WebP encoding (default is 5).
+   * @returns A promise that resolves to a Buffer containing the WebP frame.
+   */
   static async generateWebPFrameFromCanvas(
     canvas: HTMLCanvasElement,
     lossless: WebP.SetImageDataOptions["lossless"] = 5
