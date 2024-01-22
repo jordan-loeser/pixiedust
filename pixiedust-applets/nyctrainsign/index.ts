@@ -9,8 +9,6 @@ type NYCTrainAppletSchema = {
 };
 
 class NYCTrainApplet extends Applet {
-  protected setupHasBeenCalled = false;
-
   // Config Options
   private stationId: Station["id"];
   private direction: Direction;
@@ -18,7 +16,7 @@ class NYCTrainApplet extends Applet {
   // Train data
   private station?: Station;
 
-  // Components
+  // Pixiedust Components
   private sign?: TrainSign;
 
   constructor(canvas: HTMLCanvasElement, config: NYCTrainAppletSchema) {
@@ -46,15 +44,9 @@ class NYCTrainApplet extends Applet {
 
       await this.sign.setup();
     }
-
-    this.setupHasBeenCalled = true;
   }
 
-  // TODO: if total number of frames > 1 minute then print warning
   draw() {
-    if (!this.setupHasBeenCalled)
-      throw new Error("Must call .setup() before drawing.");
-
     if (!this.sign) return;
 
     this.sign.draw();

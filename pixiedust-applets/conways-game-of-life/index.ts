@@ -22,7 +22,6 @@ type ConwaysGameOfLifeAppletSchema = {
 
 class ConwaysGameOfLifeApplet extends Applet {
   private frame: number = 0;
-  protected setupHasBeenCalled = false;
 
   // Config Options
   private frameCount: number;
@@ -67,14 +66,9 @@ class ConwaysGameOfLifeApplet extends Applet {
       await newConway.setup();
       this.conways.push(newConway);
     });
-
-    this.setupHasBeenCalled = true;
   }
 
   draw() {
-    if (!this.setupHasBeenCalled)
-      throw new Error("Must call .setup() before drawing.");
-
     this.ctx.save();
     // If animating, set the composite operation and draw all layers
     if (this.frame < this.framesToAnimate) {

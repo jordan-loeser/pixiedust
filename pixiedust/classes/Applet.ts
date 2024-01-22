@@ -10,7 +10,6 @@ interface AppletInterface {
 }
 
 export abstract class Applet implements AppletInterface {
-  protected abstract setupHasBeenCalled: boolean;
   protected canvas: HTMLCanvasElement;
   protected ctx: CanvasRenderingContext2D;
   protected isDone: boolean = false;
@@ -36,12 +35,18 @@ export abstract class Applet implements AppletInterface {
     this.frameDuration = 1000 / frameRate;
   }
 
-  // These functions must be implemented by the derived applets
+  // Abstract functions must be implemented by the derived applets
   abstract setup(): Promise<void>;
   abstract draw(): void;
 
-  // Member functions
-  play() {
+  async reset() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    await this.setup();
+  }
+
+  async play() {
+    await this.reset();
+
     const interval = setInterval(() => {
       this.draw();
       if (this.isDone) clearInterval(interval);
@@ -49,8 +54,7 @@ export abstract class Applet implements AppletInterface {
   }
 
   async encodeAsGif(): Promise<Buffer | null> {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    await this.setup();
+    await this.reset();
 
     // Initialize encoder
     const encoder = new GIFEncoder(this.canvas.width, this.canvas.height, {
@@ -79,8 +83,7 @@ export abstract class Applet implements AppletInterface {
   }
 
   async encodeAsWebP(): Promise<Buffer> {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    await this.setup();
+    await this.reset();
 
     const frames = [];
 
@@ -90,7 +93,6 @@ export abstract class Applet implements AppletInterface {
       frames.push(await Applet.generateWebPFrameFromCanvas(this.canvas));
     }
 
-    // TODO: make lossy? figure out color quality issues?
     return WebP.Image.save(null, {
       width: this.canvas.width,
       height: this.canvas.height,
