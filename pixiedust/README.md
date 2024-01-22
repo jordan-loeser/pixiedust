@@ -51,3 +51,29 @@ const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const myApplet = new CountingApplet(canvas, { max: 7 });
 myApplet.play(); // Play the animated applet
 ```
+
+## Scheduler
+
+The `Scheduler` class facilitates the scheduling of multiple instances of the `Applet` class, allowing for organized and sequential execution of applets. Applets are registered using the `register` method, which adds them to the internal array. The `getApplet` method retrieves the next applet in a round-robin fashion, continuously cycling through registered applets. This can be useful in implementing a rendering server.
+
+Example usage:
+
+```ts
+import { Scheduler } from "pixiedust";
+import { CountingApplet } fom "@pixiedust-applets/counting-applet;
+
+// Create a Scheduler instance
+const scheduler = new Scheduler();
+
+// Register the applets with the scheduler
+scheduler.register(new CountingApplet(canvas, { max: 7 }));
+scheduler.register(new CountingApplet(canvas, { max: 2 }));
+
+// Use the scheduler to retrieve and play applets in a sequence
+const numberOfAppletsToPlay = 5;
+for (let i = 0; i < numberOfAppletsToPlay; i++) {
+  const currentApplet = scheduler.getApplet();
+  console.log(`Playing applet: ${currentApplet.constructor.name}`);
+  currentApplet.play();
+}
+```
