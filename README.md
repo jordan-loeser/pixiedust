@@ -9,7 +9,8 @@
 <h4 align="center">A web-based approach to creating graphics for pixel-based displays, such as LED matrices.</h4>
 
 <p align="center">
-<img alt="GitHub License" src="https://img.shields.io/github/license/jordan-loeser/pixiedust?style=flat">
+    <img alt="Turborepo" src="https://img.shields.io/badge/Turborepo-%230F0813.svg?logo=Turborepo&style=flat">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/jordan-loeser/pixiedust?style=flat">
     <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/jordan-loeser/pixiedust?style=flat">
     <img alt="GitHub issues" src="https://img.shields.io/github/issues/jordan-loeser/pixiedust?style=flat">
     <img alt="Commitizen Friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat">
