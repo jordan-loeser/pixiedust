@@ -10,14 +10,17 @@ const DEFAULT_PIXEL_COLORS: PixelColors = {
   "2": "red", // glow
 };
 
-interface TextMarqueeOptions {
+interface TextMarqueeOptions extends TextOptions {
   scrollDirection?: ScrollDirection;
   reverse?: boolean;
+  /**
+   * Scroll even if the text is less wide than the marquee.
+   */
+  forceScroll?: boolean;
 }
 
 export class TextMarquee extends Text {
-  // private scrollDirection: ScrollDirection; // TODO
-  // private isReversed: boolean; // TODO
+  private options;
 
   private offset: number = -1;
   private hasExited: boolean = false;
@@ -27,11 +30,10 @@ export class TextMarquee extends Text {
   constructor(
     str: string,
     ctx: CanvasRenderingContext2D,
-    options: TextOptions & TextMarqueeOptions
+    options: TextMarqueeOptions = {}
   ) {
     super(str, ctx, options);
-    // this.scrollDirection = options.scrollDirection ?? "horizontal"; // TODO
-    // this.isReversed = options.reverse ?? false; // TODO
+    this.options = options;
   }
 
   async setup() {
@@ -62,19 +64,21 @@ export class TextMarquee extends Text {
 
     // Loop back one time
     // TODO make work for vertical
-    if (this.text.width() < this.width) {
-      this.offset = -1;
+
+    const needsToScroll = this.text.width() >= this.width;
+    const hasAlreadyScrolled = this.hasExited && this.offset >= -1;
+    if (hasAlreadyScrolled || !(needsToScroll || this.options.forceScroll)) {
       this._isDone = true;
-    } else if (!this.hasExited && this.offset >= this.text.width()) {
+    }
+
+    // Check if the text has scrolled off the screen
+    if (!this.hasExited && this.offset >= this.text.width()) {
       this.hasExited = true;
-      this.offset = -1 * this.width;
-    } else if (this.hasExited && this.offset >= -1) {
-      this._isDone = true;
+      this.offset = -1 * this.width; // Move the text to the far side of the screen
     }
   }
 
   drawBoundingBox() {
-    console.log("DRAWBOUNDINGBOX");
     if (!this.isReady || !this.width || !this.height)
       throw new Error("Must call .setup() before calling .drawBoundingBox()!");
 

@@ -3,13 +3,14 @@ import TrainSign from "./widgets/TrainSign";
 import { fetchStation } from "./api/fetchTrainTimes";
 import { Direction, Station } from "./api/types";
 
-type NYCTrainAppletSchema = {
+type NYCTrainSignAppletSchema = {
   stationId: Station["id"];
   direction: Direction;
 };
 
-class NYCTrainApplet extends Applet {
-  protected setupHasBeenCalled = false;
+class NYCTrainSignApplet extends Applet {
+  // Abstract
+  public isDone = false;
 
   // Config Options
   private stationId: Station["id"];
@@ -18,10 +19,10 @@ class NYCTrainApplet extends Applet {
   // Train data
   private station?: Station;
 
-  // Components
+  // Pixiedust Components
   private sign?: TrainSign;
 
-  constructor(canvas: HTMLCanvasElement, config: NYCTrainAppletSchema) {
+  constructor(canvas: HTMLCanvasElement, config: NYCTrainSignAppletSchema) {
     super(canvas);
     const { stationId, direction } = config;
     this.stationId = stationId;
@@ -46,15 +47,9 @@ class NYCTrainApplet extends Applet {
 
       await this.sign.setup();
     }
-
-    this.setupHasBeenCalled = true;
   }
 
-  // TODO: if total number of frames > 1 minute then print warning
   draw() {
-    if (!this.setupHasBeenCalled)
-      throw new Error("Must call .setup() before drawing.");
-
     if (!this.sign) return;
 
     this.sign.draw();
@@ -63,6 +58,6 @@ class NYCTrainApplet extends Applet {
   }
 }
 
-export default NYCTrainApplet;
+export default NYCTrainSignApplet;
 
 export { Direction, Station };
