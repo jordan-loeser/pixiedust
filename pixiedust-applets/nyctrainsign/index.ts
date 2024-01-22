@@ -3,12 +3,12 @@ import TrainSign from "./widgets/TrainSign";
 import { fetchStation } from "./api/fetchTrainTimes";
 import { Direction, Station } from "./api/types";
 
-type NYCTrainAppletSchema = {
+type NYCTrainSignAppletSchema = {
   stationId: Station["id"];
   direction: Direction;
 };
 
-class NYCTrainApplet extends Applet {
+class NYCTrainSignApplet extends Applet {
   // Abstract
   public isDone = false;
 
@@ -58,6 +58,6 @@ class NYCTrainApplet extends Applet {
   }
 }
 
-export default NYCTrainApplet;
+export default NYCTrainSignApplet;
 
 export { Direction, Station };
