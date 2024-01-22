@@ -22,7 +22,7 @@ class NYCTrainSignApplet extends Applet {
   // Pixiedust Components
   private sign?: TrainSign;
 
-  constructor(canvas: HTMLCanvasElement, config: NYCTrainAppletSchema) {
+  constructor(canvas: HTMLCanvasElement, config: NYCTrainSignAppletSchema) {
     super(canvas);
     const { stationId, direction } = config;
     this.stationId = stationId;
