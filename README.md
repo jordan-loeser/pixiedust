@@ -10,9 +10,9 @@
 
 <p align="center">
     <img alt="Turborepo" src="https://img.shields.io/badge/Turborepo-%230F0813.svg?logo=Turborepo&style=flat">
-    <img alt="GitHub License" src="https://img.shields.io/github/license/jordan-loeser/pixiedust?style=flat">
-    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/jordan-loeser/pixiedust?style=flat">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/jordan-loeser/pixiedust?style=flat">
+    <a href="https://github.com/jordan-loeser/pixiedust/blob/main/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/jordan-loeser/pixiedust?style=flat"></a>
+    <a href="https://github.com/jordan-loeser/pixiedust/pulls"><img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/jordan-loeser/pixiedust?style=flat"></a>
+    <a href="https://github.com/jordan-loeser/pixiedust/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/jordan-loeser/pixiedust?style=flat"></a>
     <img alt="Commitizen Friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat">
 </p>
 <img src="./pixiedust-applets/nyctrainsign/docs/preview.gif" width="100%"/>
