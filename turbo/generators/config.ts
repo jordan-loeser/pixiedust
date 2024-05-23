@@ -56,7 +56,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
       {
         type: "add",
         path: "pixiedust-applets/{{name}}/tsconfig.json",
-        templateFile: "templates/ tsconfig.json.hbs",
+        templateFile: "templates/tsconfig.json.hbs",
       },
     ],
   });
