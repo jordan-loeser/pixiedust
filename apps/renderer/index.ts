@@ -41,32 +41,32 @@ const uptown18th = new NYCTrainApplet(canvas, {
   stationId: "131",
   direction: Direction.NORTH,
 });
-scheduler.register(uptown18th);
+// scheduler.register(uptown18th);
 
 const downtown18th = new NYCTrainApplet(canvas, {
   stationId: "131",
   direction: Direction.SOUTH,
 });
-scheduler.register(downtown18th);
+// scheduler.register(downtown18th);
 
 const conways2 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
   compositeOperation: "screen",
   fadeOut: true,
 });
-scheduler.register(conways2);
+// scheduler.register(conways2);
 
 const uptown14th = new NYCTrainApplet(canvas, {
   stationId: "A31",
   direction: Direction.NORTH,
 });
-scheduler.register(uptown14th);
+// scheduler.register(uptown14th);
 
 const downtown14th = new NYCTrainApplet(canvas, {
   stationId: "A31",
   direction: Direction.SOUTH,
 });
-scheduler.register(downtown14th);
+// scheduler.register(downtown14th);
 
 const conways3 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [
@@ -76,13 +76,13 @@ const conways3 = new ConwaysGameOfLifeApplet(canvas, {
   compositeOperation: "screen",
   frameCount: 50,
 });
-scheduler.register(conways3);
+// scheduler.register(conways3);
 
 // const conways = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [{ cellColor: "#5500aa" }],
 //   fadeOut: true,
 // });
-// scheduler.register(conways);
+// // scheduler.register(conways);
 
 // const conways4 = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [
@@ -93,7 +93,7 @@ scheduler.register(conways3);
 //   compositeOperation: "hard-light",
 //   frameCount: 50,
 // });
-// scheduler.register(conways4);
+// // scheduler.register(conways4);
 
 // const conways4 = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [
@@ -106,7 +106,7 @@ scheduler.register(conways3);
 //   compositeOperation: "lighter",
 //   frameCount: 50,
 // });
-// scheduler.register(conways4);
+// // scheduler.register(conways4);
 
 const spotify = new SpotifyApplet(canvas);
 scheduler.register(spotify);

@@ -1,6 +1,6 @@
-# nyctrainsign
+# spotify
 
-Displays the next two trains arriving at a given MTA station in a given direction.
+Displays the currently playing track on Spotify.
 
 ## Preview
 

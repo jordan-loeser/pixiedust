@@ -1,5 +1,7 @@
 import { Image } from "canvas";
 import { Applet, Font, TextMarquee } from "pixiedust";
+import { getAuthToken } from "./api/getAuthToken";
+import { fetchCurrentlyPlaying } from "./api/fetchCurrentlyPlaying";
 
 // Configuration Defaults
 const HOLD_DURATION_S = 2;
@@ -8,21 +10,19 @@ const DEFAULT_DURATION_S = 10;
 // Styling
 const PADDING = 2;
 
-// Test Data // TODO: pull during setup
-const ALBUM_COVER_IMAGE_URL =
-  "https://upload.wikimedia.org/wikipedia/en/2/25/Evanescence_-_Fallen.png";
-const SONG_NAME = "Bring Me to Life";
-const ARTIST_NAME = "Evanescence";
-const PROGRESS_S = 2;
-const DURATION_S = 10;
-
 type SpotifyAppletSchema = {
   duration?: number; // seconds
 };
 
 class SpotifyApplet extends Applet {
+  // Abstract
+  public isDone = false;
+
+  // Helpers
   private frame: number = 0;
   protected setupHasBeenCalled = false;
+  private progressMs = 0;
+  private durationMs = 0;
 
   // Config Options
   private duration: number;
@@ -40,10 +40,21 @@ class SpotifyApplet extends Applet {
   }
 
   async setup(): Promise<void> {
+    if (!process.env.SP_DC) throw new Error("Missing SP_DC");
+    if (!process.env.USERNAME) throw new Error("Missing USERNAME");
+
     this.frame = 0;
 
+    // Pull data from spotify
+    const currentlyPlaying = await fetchCurrentlyPlaying(
+      process.env.SP_DC,
+      process.env.USERNAME
+    );
+    this.progressMs = currentlyPlaying.progressMs;
+    this.durationMs = currentlyPlaying.durationMs;
+
     // Initialize marquees
-    this.songName = new TextMarquee(SONG_NAME, this.ctx, {
+    this.songName = new TextMarquee(currentlyPlaying.name, this.ctx, {
       font: Font.ARRIVAL_TIME,
       x: this.canvas.height + 1,
       y: PADDING + 2,
@@ -56,7 +67,7 @@ class SpotifyApplet extends Applet {
     });
     await this.songName.setup();
 
-    this.artistName = new TextMarquee(ARTIST_NAME, this.ctx, {
+    this.artistName = new TextMarquee(currentlyPlaying.artist, this.ctx, {
       font: Font.DINA,
       x: this.canvas.height + 1,
       y: PADDING + this.songName.height! + 2,
@@ -70,7 +81,7 @@ class SpotifyApplet extends Applet {
     await this.artistName.setup();
 
     // Load album cover image
-    this.albumCover.src = ALBUM_COVER_IMAGE_URL;
+    this.albumCover.src = currentlyPlaying.imageUrl;
     return new Promise((resolve) => {
       this.albumCover.onload = () => {
         this.setupHasBeenCalled = true;
@@ -111,7 +122,7 @@ class SpotifyApplet extends Applet {
     this.ctx.save();
     const progressBarWidth = this.canvas.width - this.canvas.height - PADDING; // full width minus padding and image
     const percentComplete = Math.min(
-      (PROGRESS_S + this.frame / this.frameRate) / DURATION_S,
+      (this.progressMs * 1000 + this.frame / this.frameRate) / this.durationMs,
       1.0
     );
     // Background bar
@@ -122,12 +133,13 @@ class SpotifyApplet extends Applet {
       progressBarWidth,
       1
     );
+
     // Foreground bar
     this.ctx.fillStyle = "#bfff50";
     this.ctx.fillRect(
       this.canvas.height,
       this.canvas.height - PADDING - 1,
-      progressBarWidth,
+      percentComplete,
       1
     );
 
