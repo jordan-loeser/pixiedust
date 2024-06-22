@@ -3,7 +3,7 @@ import { Applet, Font, TextMarquee } from "pixiedust";
 import { fetchCurrentlyPlaying } from "./api/fetchCurrentlyPlaying";
 
 // Configuration Defaults
-const HOLD_DURATION_S = 2;
+const DEFAULT_HOLD_DURATION_S = 2;
 const DEFAULT_DURATION_S = 20;
 
 // Styling
@@ -11,6 +11,7 @@ const PADDING = 2;
 
 type SpotifyAppletSchema = {
   duration?: number; // seconds
+  holdDuration?: number; // seconds
   getAccessToken: () => Promise<string>;
 };
 
@@ -26,6 +27,7 @@ class SpotifyApplet extends Applet {
 
   // Config Options
   private duration: number;
+  private holdDuration: number;
   private getAccessToken: () => Promise<string>;
 
   // Components
@@ -36,6 +38,7 @@ class SpotifyApplet extends Applet {
   constructor(canvas: HTMLCanvasElement, config: SpotifyAppletSchema) {
     super(canvas);
     this.duration = config.duration ?? DEFAULT_DURATION_S;
+    this.holdDuration = config.holdDuration ?? DEFAULT_HOLD_DURATION_S;
     this.getAccessToken = config.getAccessToken;
 
     // Internal setup
@@ -122,7 +125,7 @@ class SpotifyApplet extends Applet {
     );
 
     // Hold the text for 20 frames then scroll
-    const isHolding = this.frame <= this.durationToFrames(HOLD_DURATION_S);
+    const isHolding = this.frame <= this.durationToFrames(this.holdDuration);
     this.songName?.scrollAndDraw(isHolding || this.songName.isDone ? 0 : 1);
     this.artistName?.scrollAndDraw(isHolding || this.artistName.isDone ? 0 : 1);
 

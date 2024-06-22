@@ -9,7 +9,8 @@ Displays the currently playing track on Spotify.
 
 ## Config Values
 
-| Key           | Type               | Description                                    | Default |
-| ------------- | ------------------ | ---------------------------------------------- | ------- |
-| `stationId`\* | `string \| number` | The station id according to [wtfmta]().        | n/a     |
-| `direction`\* | `"N" \| "S"`       | The direction to show (aka Uptown or Downtown) | n/a     |
+| Key                | Type                    | Description                                                    | Default |
+| ------------------ | ----------------------- | -------------------------------------------------------------- | ------- |
+| `getAccessToken`\* | `() => Promise<string>` | A function that returns a valid Spotify access token           | n/a     |
+| `holdDuration`     | `number`                | The duration in seconds to freeze the marquee before scrolling | 2       |
+| `duration`\        | `number`                | The total duration in seconds to present the applet            | 20      |
