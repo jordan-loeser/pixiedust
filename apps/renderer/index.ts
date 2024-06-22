@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { JSDOM } from "jsdom";
-import { Scheduler } from "pixiedust";
+import { Applet, Scheduler } from "pixiedust";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
 import SpotifyApplet from "@applets/spotify";
@@ -118,18 +118,31 @@ const spotify2 = new SpotifyApplet(canvas, {
 });
 scheduler.register(spotify2);
 
-app.get("/render", async (req, res) => {
-  const applet = scheduler.getApplet();
+enum Format {
+  GIF = "gif",
+  WebP = "webp",
+}
 
-  if (req.query.format === "webp") {
-    const webp = await applet.encodeAsWebP();
-    res.set("Content-Type", "image/webp");
-    res.send(webp);
-  } else {
-    const gif = await applet.encodeAsGif();
-    res.set("Content-Type", "image/gif");
-    res.send(gif);
+const encode = async (applet: Applet, format: Format) => {
+  if (format === Format.WebP) {
+    return await applet.encodeAsWebP();
   }
+  return await applet.encodeAsGif();
+};
+
+app.get("/render", async (req, res) => {
+  const format = req.query.format as Format;
+  let applet = scheduler.getApplet();
+  let buffer = await encode(applet, format);
+
+  while (buffer === null) {
+    console.log("Null buffer, trying next applet...");
+    applet = scheduler.getApplet();
+    buffer = await encode(applet, format);
+  }
+
+  res.set("Content-Type", format === Format.WebP ? "image/webp" : "image/gif");
+  res.send(buffer);
 });
 
 function generateRandomString(length: number) {
