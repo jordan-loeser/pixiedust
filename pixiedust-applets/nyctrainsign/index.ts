@@ -11,6 +11,7 @@ type NYCTrainSignAppletSchema = {
 class NYCTrainSignApplet extends Applet {
   // Abstract
   public isDone = false;
+  public isActive = false;
 
   // Config Options
   private stationId: Station["id"];
@@ -30,22 +31,27 @@ class NYCTrainSignApplet extends Applet {
   }
 
   async setup() {
-    // Fetch train times
-    this.station = await fetchStation(this.stationId);
+    try {
+      // Fetch train times
+      this.station = await fetchStation(this.stationId);
+      this.isActive = true;
 
-    const trains =
-      this.direction === Direction.NORTH
-        ? this.station.northbound
-        : this.station.southbound;
+      const trains =
+        this.direction === Direction.NORTH
+          ? this.station.northbound
+          : this.station.southbound;
 
-    if (trains.length > 0) {
-      this.sign = new TrainSign({
-        ctx: this.ctx,
-        topTrain: trains.shift(),
-        bottomTrain: trains.shift(),
-      });
+      if (trains.length > 0) {
+        this.sign = new TrainSign({
+          ctx: this.ctx,
+          topTrain: trains.shift(),
+          bottomTrain: trains.shift(),
+        });
 
-      await this.sign.setup();
+        await this.sign.setup();
+      }
+    } catch (e) {
+      console.error("nyctrainsign setup error:", (e as Error).message);
     }
   }
 

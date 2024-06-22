@@ -23,6 +23,7 @@ type ConwaysGameOfLifeAppletSchema = {
 class ConwaysGameOfLifeApplet extends Applet {
   // Abstract
   public isDone = false;
+  public isActive = true;
 
   // Config Options
   private frameCount: number;

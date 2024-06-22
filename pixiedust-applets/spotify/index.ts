@@ -17,6 +17,7 @@ type SpotifyAppletSchema = {
 
 class SpotifyApplet extends Applet {
   // Abstract
+  public isActive = false;
   public isDone = false;
 
   // Helpers
@@ -47,15 +48,14 @@ class SpotifyApplet extends Applet {
   }
 
   async setup(): Promise<void> {
-    if (!process.env.SP_DC) throw new Error("Missing SP_DC");
-    if (!process.env.USERNAME) throw new Error("Missing USERNAME");
-
     this.frame = 0;
 
-    // Pull data from spotify
     try {
+      // Pull data from spotify
       const token = await this.getAccessToken();
       const currentlyPlaying = await fetchCurrentlyPlaying(token);
+
+      this.isActive = true;
 
       this.progressMs = currentlyPlaying.progressMs;
       this.durationMs = currentlyPlaying.durationMs;
@@ -96,12 +96,16 @@ class SpotifyApplet extends Applet {
         };
       });
     } catch (e) {
-      console.error(e);
+      console.error("Spotify applet render error:", (e as Error).message);
+      this.setupHasBeenCalled = true;
       this.isDone = true;
+      this.isActive = false;
     }
   }
 
   draw() {
+    if (this.isDone) return; // Handle auth failures and empty playback
+
     if (!this.setupHasBeenCalled)
       throw new Error("Must call .setup() before drawing.");
 

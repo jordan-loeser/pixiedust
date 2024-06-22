@@ -26,6 +26,7 @@ interface AppletInterface {
  */
 export abstract class Applet implements AppletInterface {
   abstract isDone: boolean;
+  abstract isActive: boolean;
   abstract setup(): Promise<void>;
   abstract draw(): void;
 
@@ -91,8 +92,10 @@ export abstract class Applet implements AppletInterface {
    * Encodes the applet as an animated GIF image.
    * @returns A promise that resolves to a Buffer containing the encoded GIF.
    */
-  async encodeAsGif(): Promise<Buffer> {
+  async encodeAsGif(): Promise<Buffer | null> {
     await this.reset();
+
+    if (!this.isActive) return null;
 
     // Initialize encoder
     const encoder = new GIFEncoder(this.canvas.width, this.canvas.height, {
@@ -130,8 +133,10 @@ export abstract class Applet implements AppletInterface {
    * Encodes the applet as an animated WebP image.
    * @returns A promise that resolves to a Buffer containing the encoded WebP.
    */
-  async encodeAsWebP(): Promise<Buffer> {
+  async encodeAsWebP(): Promise<Buffer | null> {
     await this.reset();
+
+    if (!this.isActive) return null;
 
     const frames = [];
 
