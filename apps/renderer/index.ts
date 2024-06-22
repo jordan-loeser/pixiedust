@@ -5,6 +5,7 @@ import { JSDOM } from "jsdom";
 import { Scheduler } from "pixiedust";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
+import SpotifyApplet from "@applets/spotify";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -55,6 +56,11 @@ const conways2 = new ConwaysGameOfLifeApplet(canvas, {
 });
 scheduler.register(conways2);
 
+const spotify = new SpotifyApplet(canvas, {
+  getAccessToken: () => getSpotifyAccessToken(),
+});
+scheduler.register(spotify);
+
 const uptown14th = new NYCTrainApplet(canvas, {
   stationId: "A31",
   direction: Direction.NORTH,
@@ -81,7 +87,7 @@ scheduler.register(conways3);
 //   layers: [{ cellColor: "#5500aa" }],
 //   fadeOut: true,
 // });
-// scheduler.register(conways);
+// // scheduler.register(conways);
 
 // const conways4 = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [
@@ -92,7 +98,7 @@ scheduler.register(conways3);
 //   compositeOperation: "hard-light",
 //   frameCount: 50,
 // });
-// scheduler.register(conways4);
+// // scheduler.register(conways4);
 
 // const conways4 = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [
@@ -105,7 +111,12 @@ scheduler.register(conways3);
 //   compositeOperation: "lighter",
 //   frameCount: 50,
 // });
-// scheduler.register(conways4);
+// // scheduler.register(conways4);
+
+const spotify2 = new SpotifyApplet(canvas, {
+  getAccessToken: () => getSpotifyAccessToken(),
+});
+scheduler.register(spotify2);
 
 app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
@@ -120,3 +131,138 @@ app.get("/render", async (req, res) => {
     res.send(gif);
   }
 });
+
+function generateRandomString(length: number) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+type SpotifyToken = {
+  accessToken: string;
+  refreshToken: string;
+  expiration: Date;
+};
+
+// TODO: move to Redis
+let localToken: SpotifyToken;
+let localState: string;
+
+app.get("/authenticate/spotify", async (_req, res) => {
+  const state = generateRandomString(16);
+  const scope = ["user-read-currently-playing"].join(" ");
+
+  localState = state;
+
+  if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_REDIRECT_URI) {
+    return res.status(500).send("Environment variables misconfigured.");
+  }
+
+  return res.redirect(
+    "https://accounts.spotify.com/authorize?" +
+      "response_type=code" +
+      "&client_id=" +
+      encodeURIComponent(process.env.SPOTIFY_CLIENT_ID) +
+      "&scope=" +
+      encodeURIComponent(scope) +
+      "&redirect_uri=" +
+      encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI) +
+      "&state=" +
+      encodeURIComponent(state)
+  );
+});
+
+app.get("/callback/spotify", async (req, res) => {
+  var code = (req.query.code as string) || null;
+  var state = (req.query.state as string) || null;
+
+  if (code === null || state === null) {
+    return res.status(400).send("Missing code or state");
+  }
+
+  if (state !== localState) {
+    return res.status(400).send("Invalid state");
+  }
+
+  if (
+    !process.env.SPOTIFY_REDIRECT_URI ||
+    !process.env.SPOTIFY_CLIENT_ID ||
+    !process.env.SPOTIFY_CLIENT_SECRET
+  ) {
+    return res.status(500).send("Environment variables misconfigured.");
+  }
+
+  const tokenBody =
+    `code=${encodeURIComponent(code)}` +
+    `&redirect_uri=${encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)}` +
+    `&grant_type=authorization_code` +
+    `&client_id=${process.env.SPOTIFY_CLIENT_ID}` +
+    `&client_secret=${process.env.SPOTIFY_CLIENT_SECRET}`;
+
+  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    body: tokenBody,
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+  });
+
+  const json = await tokenRes.json();
+
+  localToken = {
+    accessToken: json.access_token,
+    refreshToken: json.refresh_token,
+    expiration: new Date(Date.now() + json.expires_in * 1000),
+  };
+
+  res.json(json);
+});
+
+const getSpotifyAccessToken = async (): Promise<string> => {
+  if (localToken && localToken.expiration > new Date()) {
+    return localToken.accessToken;
+  }
+
+  await refreshSpotifyToken();
+  return localToken.accessToken;
+};
+
+const refreshSpotifyToken = async () => {
+  if (!localToken || !localToken.refreshToken) {
+    throw new Error("No refresh token available");
+  }
+
+  if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
+    throw new Error("Environment variables misconfigured.");
+  }
+
+  const tokenBody =
+    `&grant_type=refresh_token` +
+    `&refresh_token=${encodeURIComponent(localToken.refreshToken)}` +
+    `&client_id=${process.env.SPOTIFY_CLIENT_ID}` +
+    `&client_secret=${process.env.SPOTIFY_CLIENT_SECRET}`;
+
+  const res = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    body: tokenBody,
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+  });
+
+  if (!res.ok) {
+    return Promise.reject(`Failed to refresh token: ${res.statusText}`);
+  }
+
+  const json = await res.json();
+
+  localToken = {
+    accessToken: json.access_token,
+    refreshToken: json.refresh_token,
+    expiration: new Date(Date.now() + json.expires_in * 1000),
+  };
+};
