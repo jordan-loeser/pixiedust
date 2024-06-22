@@ -124,3 +124,71 @@ app.get("/render", async (req, res) => {
     res.send(gif);
   }
 });
+
+function generateRandomString(length: number) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+app.get("/authenticate/spotify", async (_req, res) => {
+  var state = generateRandomString(16);
+  var scope = ["user-read-currently-playing"].join(" ");
+
+  if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_REDIRECT_URI) {
+    return res.status(500).send("Environment variables misconfigured.");
+  }
+
+  return res.redirect(
+    "https://accounts.spotify.com/authorize?" +
+      "response_type=code" +
+      "&client_id=" +
+      encodeURIComponent(process.env.SPOTIFY_CLIENT_ID) +
+      "&scope=" +
+      encodeURIComponent(scope) +
+      "&redirect_uri=" +
+      encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI) +
+      "&state=" +
+      encodeURIComponent(state)
+  );
+});
+
+app.get("/callback/spotify", async (req, res) => {
+  var code = (req.query.code as string) || null;
+  var state = (req.query.state as string) || null;
+
+  if (code === null || state === null) {
+    return res.status(400).send("Missing code or state");
+  }
+
+  if (
+    !process.env.SPOTIFY_REDIRECT_URI ||
+    !process.env.SPOTIFY_CLIENT_ID ||
+    !process.env.SPOTIFY_CLIENT_SECRET
+  ) {
+    return res.status(500).send("Environment variables misconfigured.");
+  }
+
+  const tokenBody =
+    `code=${encodeURIComponent(code)}` +
+    `&redirect_uri=${encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)}` +
+    `&grant_type=authorization_code` +
+    `&client_id=${process.env.SPOTIFY_CLIENT_ID}` +
+    `&client_secret=${process.env.SPOTIFY_CLIENT_SECRET}`;
+
+  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    body: tokenBody,
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+  });
+
+  const json = await tokenRes.json();
+
+  res.json(json);
+});
