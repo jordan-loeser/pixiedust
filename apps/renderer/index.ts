@@ -6,6 +6,7 @@ import { Scheduler } from "pixiedust";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
 import SpotifyApplet from "@applets/spotify";
+import { errorMonitor } from "events";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -135,9 +136,20 @@ function generateRandomString(length: number) {
   return result;
 }
 
+type SpotifyToken = {
+  accessToken: string;
+  refreshToken: string;
+  expiration: Date;
+};
+
+let localToken: SpotifyToken;
+let localState: string;
+
 app.get("/authenticate/spotify", async (_req, res) => {
-  var state = generateRandomString(16);
-  var scope = ["user-read-currently-playing"].join(" ");
+  const state = generateRandomString(16);
+  const scope = ["user-read-currently-playing"].join(" ");
+
+  localState = state;
 
   if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_REDIRECT_URI) {
     return res.status(500).send("Environment variables misconfigured.");
@@ -165,6 +177,10 @@ app.get("/callback/spotify", async (req, res) => {
     return res.status(400).send("Missing code or state");
   }
 
+  if (state !== localState) {
+    return res.status(400).send("Invalid state");
+  }
+
   if (
     !process.env.SPOTIFY_REDIRECT_URI ||
     !process.env.SPOTIFY_CLIENT_ID ||
@@ -190,5 +206,58 @@ app.get("/callback/spotify", async (req, res) => {
 
   const json = await tokenRes.json();
 
+  localToken = {
+    accessToken: json.access_token,
+    refreshToken: json.refresh_token,
+    expiration: new Date(Date.now() + json.expires_in * 1000),
+  };
+
+  getSpotifyAccessToken();
+
   res.json(json);
 });
+
+const getSpotifyAccessToken = async () => {
+  if (localToken && localToken.expiration > new Date()) {
+    return localToken.accessToken;
+  }
+
+  await refreshSpotifyToken();
+  return localToken;
+};
+
+const refreshSpotifyToken = async () => {
+  if (!localToken || !localToken.refreshToken) {
+    throw new Error("No refresh token available");
+  }
+
+  if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
+    throw new Error("Environment variables misconfigured.");
+  }
+
+  const tokenBody =
+    `&grant_type=refresh_token` +
+    `&refresh_token=${encodeURIComponent(localToken.refreshToken)}` +
+    `&client_id=${process.env.SPOTIFY_CLIENT_ID}` +
+    `&client_secret=${process.env.SPOTIFY_CLIENT_SECRET}`;
+
+  const res = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    body: tokenBody,
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+  });
+
+  if (!res.ok) {
+    return Promise.reject(`Failed to refresh token: ${res.statusText}`);
+  }
+
+  const json = await res.json();
+
+  localToken = {
+    accessToken: json.access_token,
+    refreshToken: json.refresh_token,
+    expiration: new Date(Date.now() + json.expires_in * 1000),
+  };
+};
