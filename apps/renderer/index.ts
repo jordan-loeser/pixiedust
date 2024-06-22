@@ -43,11 +43,18 @@ const uptown18th = new NYCTrainApplet(canvas, {
 });
 scheduler.register(uptown18th);
 
+const spotify = new SpotifyApplet(canvas, {
+  getAccessToken: () => getSpotifyAccessToken(),
+});
+scheduler.register(spotify);
+
 const downtown18th = new NYCTrainApplet(canvas, {
   stationId: "131",
   direction: Direction.SOUTH,
 });
 scheduler.register(downtown18th);
+
+scheduler.register(spotify);
 
 const conways2 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
@@ -56,9 +63,6 @@ const conways2 = new ConwaysGameOfLifeApplet(canvas, {
 });
 scheduler.register(conways2);
 
-const spotify = new SpotifyApplet(canvas, {
-  getAccessToken: () => getSpotifyAccessToken(),
-});
 scheduler.register(spotify);
 
 const uptown14th = new NYCTrainApplet(canvas, {
@@ -67,21 +71,25 @@ const uptown14th = new NYCTrainApplet(canvas, {
 });
 scheduler.register(uptown14th);
 
+scheduler.register(spotify);
+
 const downtown14th = new NYCTrainApplet(canvas, {
   stationId: "A31",
   direction: Direction.SOUTH,
 });
 scheduler.register(downtown14th);
 
-const conways3 = new ConwaysGameOfLifeApplet(canvas, {
-  layers: [
-    { cellSize: 4, cellColor: "red" },
-    { cellSize: 2, cellColor: "blue" },
-  ],
-  compositeOperation: "screen",
-  frameCount: 50,
-});
-scheduler.register(conways3);
+scheduler.register(spotify);
+
+// const conways3 = new ConwaysGameOfLifeApplet(canvas, {
+//   layers: [
+//     { cellSize: 4, cellColor: "red" },
+//     { cellSize: 2, cellColor: "blue" },
+//   ],
+//   compositeOperation: "screen",
+//   frameCount: 50,
+// });
+// scheduler.register(conways3);
 
 // const conways = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [{ cellColor: "#5500aa" }],
@@ -112,11 +120,6 @@ scheduler.register(conways3);
 //   frameCount: 50,
 // });
 // // scheduler.register(conways4);
-
-const spotify2 = new SpotifyApplet(canvas, {
-  getAccessToken: () => getSpotifyAccessToken(),
-});
-scheduler.register(spotify2);
 
 enum Format {
   GIF = "gif",
