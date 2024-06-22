@@ -1,17 +1,17 @@
 import { Image } from "canvas";
 import { Applet, Font, TextMarquee } from "pixiedust";
-import { getAuthToken } from "./api/getAuthToken";
 import { fetchCurrentlyPlaying } from "./api/fetchCurrentlyPlaying";
 
 // Configuration Defaults
 const HOLD_DURATION_S = 2;
-const DEFAULT_DURATION_S = 10;
+const DEFAULT_DURATION_S = 20;
 
 // Styling
 const PADDING = 2;
 
 type SpotifyAppletSchema = {
   duration?: number; // seconds
+  getAccessToken: () => Promise<string>;
 };
 
 class SpotifyApplet extends Applet {
@@ -26,15 +26,19 @@ class SpotifyApplet extends Applet {
 
   // Config Options
   private duration: number;
+  private getAccessToken: () => Promise<string>;
 
   // Components
   private albumCover: Image;
   private songName?: TextMarquee;
   private artistName?: TextMarquee;
 
-  constructor(canvas: HTMLCanvasElement, config: SpotifyAppletSchema = {}) {
+  constructor(canvas: HTMLCanvasElement, config: SpotifyAppletSchema) {
     super(canvas);
     this.duration = config.duration ?? DEFAULT_DURATION_S;
+    this.getAccessToken = config.getAccessToken;
+
+    // Internal setup
     this.albumCover = new Image();
     this.ctx.imageSmoothingEnabled = false;
   }
@@ -46,48 +50,52 @@ class SpotifyApplet extends Applet {
     this.frame = 0;
 
     // Pull data from spotify
-    const currentlyPlaying = await fetchCurrentlyPlaying(
-      process.env.SP_DC,
-      process.env.USERNAME
-    );
-    this.progressMs = currentlyPlaying.progressMs;
-    this.durationMs = currentlyPlaying.durationMs;
+    try {
+      const token = await this.getAccessToken();
+      const currentlyPlaying = await fetchCurrentlyPlaying(token);
 
-    // Initialize marquees
-    this.songName = new TextMarquee(currentlyPlaying.name, this.ctx, {
-      font: Font.ARRIVAL_TIME,
-      x: this.canvas.height + 1,
-      y: PADDING + 2,
-      width: this.canvas.width - this.canvas.height - PADDING - 1,
-      pixelColors: {
-        "0": null, // background
-        "1": "#bfff50", // foreground
-        "2": "null", // glow
-      },
-    });
-    await this.songName.setup();
+      this.progressMs = currentlyPlaying.progressMs;
+      this.durationMs = currentlyPlaying.durationMs;
 
-    this.artistName = new TextMarquee(currentlyPlaying.artist, this.ctx, {
-      font: Font.DINA,
-      x: this.canvas.height + 1,
-      y: PADDING + this.songName.height! + 2,
-      width: this.canvas.width - this.canvas.height - PADDING - 1,
-      pixelColors: {
-        "0": null, // background
-        "1": "#FFF", // foreground
-        "2": "null", // glow
-      },
-    });
-    await this.artistName.setup();
+      // Initialize marquees
+      this.songName = new TextMarquee(currentlyPlaying.name, this.ctx, {
+        font: Font.ARRIVAL_TIME,
+        x: this.canvas.height + 1,
+        y: PADDING + 2,
+        width: this.canvas.width - this.canvas.height - PADDING - 1,
+        pixelColors: {
+          "0": null, // background
+          "1": "#bfff50", // foreground
+          "2": "null", // glow
+        },
+      });
+      await this.songName.setup();
 
-    // Load album cover image
-    this.albumCover.src = currentlyPlaying.imageUrl;
-    return new Promise((resolve) => {
-      this.albumCover.onload = () => {
-        this.setupHasBeenCalled = true;
-        resolve();
-      };
-    });
+      this.artistName = new TextMarquee(currentlyPlaying.artist, this.ctx, {
+        font: Font.DINA,
+        x: this.canvas.height + 1,
+        y: PADDING + this.songName.height! + 2,
+        width: this.canvas.width - this.canvas.height - PADDING - 1,
+        pixelColors: {
+          "0": null, // background
+          "1": "#FFF", // foreground
+          "2": "null", // glow
+        },
+      });
+      await this.artistName.setup();
+
+      // Load album cover image
+      this.albumCover.src = currentlyPlaying.imageUrl;
+      return new Promise((resolve) => {
+        this.albumCover.onload = () => {
+          this.setupHasBeenCalled = true;
+          resolve();
+        };
+      });
+    } catch (e) {
+      console.error(e);
+      this.isDone = true;
+    }
   }
 
   draw() {
@@ -121,10 +129,12 @@ class SpotifyApplet extends Applet {
     // Draw the progress indicator
     this.ctx.save();
     const progressBarWidth = this.canvas.width - this.canvas.height - PADDING; // full width minus padding and image
+    const msElapsed = (this.frame / this.frameRate) * 1000;
     const percentComplete = Math.min(
-      (this.progressMs * 1000 + this.frame / this.frameRate) / this.durationMs,
-      1.0
+      1.0,
+      (this.progressMs + msElapsed) / this.durationMs
     );
+
     // Background bar
     this.ctx.fillStyle = "#aaaaaa";
     this.ctx.fillRect(
@@ -139,7 +149,7 @@ class SpotifyApplet extends Applet {
     this.ctx.fillRect(
       this.canvas.height,
       this.canvas.height - PADDING - 1,
-      percentComplete,
+      progressBarWidth * percentComplete,
       1
     );
 

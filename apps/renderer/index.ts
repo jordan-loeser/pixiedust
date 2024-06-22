@@ -6,7 +6,6 @@ import { Scheduler } from "pixiedust";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
 import SpotifyApplet from "@applets/spotify";
-import { errorMonitor } from "events";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -42,32 +41,37 @@ const uptown18th = new NYCTrainApplet(canvas, {
   stationId: "131",
   direction: Direction.NORTH,
 });
-// scheduler.register(uptown18th);
+scheduler.register(uptown18th);
 
 const downtown18th = new NYCTrainApplet(canvas, {
   stationId: "131",
   direction: Direction.SOUTH,
 });
-// scheduler.register(downtown18th);
+scheduler.register(downtown18th);
 
 const conways2 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [{ cellColor: "orange" }, { cellColor: "blue" }],
   compositeOperation: "screen",
   fadeOut: true,
 });
-// scheduler.register(conways2);
+scheduler.register(conways2);
+
+const spotify = new SpotifyApplet(canvas, {
+  getAccessToken: () => getSpotifyAccessToken(),
+});
+scheduler.register(spotify);
 
 const uptown14th = new NYCTrainApplet(canvas, {
   stationId: "A31",
   direction: Direction.NORTH,
 });
-// scheduler.register(uptown14th);
+scheduler.register(uptown14th);
 
 const downtown14th = new NYCTrainApplet(canvas, {
   stationId: "A31",
   direction: Direction.SOUTH,
 });
-// scheduler.register(downtown14th);
+scheduler.register(downtown14th);
 
 const conways3 = new ConwaysGameOfLifeApplet(canvas, {
   layers: [
@@ -77,7 +81,7 @@ const conways3 = new ConwaysGameOfLifeApplet(canvas, {
   compositeOperation: "screen",
   frameCount: 50,
 });
-// scheduler.register(conways3);
+scheduler.register(conways3);
 
 // const conways = new ConwaysGameOfLifeApplet(canvas, {
 //   layers: [{ cellColor: "#5500aa" }],
@@ -109,8 +113,10 @@ const conways3 = new ConwaysGameOfLifeApplet(canvas, {
 // });
 // // scheduler.register(conways4);
 
-const spotify = new SpotifyApplet(canvas);
-scheduler.register(spotify);
+const spotify2 = new SpotifyApplet(canvas, {
+  getAccessToken: () => getSpotifyAccessToken(),
+});
+scheduler.register(spotify2);
 
 app.get("/render", async (req, res) => {
   const applet = scheduler.getApplet();
@@ -142,6 +148,7 @@ type SpotifyToken = {
   expiration: Date;
 };
 
+// TODO: move to Redis
 let localToken: SpotifyToken;
 let localState: string;
 
@@ -212,18 +219,16 @@ app.get("/callback/spotify", async (req, res) => {
     expiration: new Date(Date.now() + json.expires_in * 1000),
   };
 
-  getSpotifyAccessToken();
-
   res.json(json);
 });
 
-const getSpotifyAccessToken = async () => {
+const getSpotifyAccessToken = async (): Promise<string> => {
   if (localToken && localToken.expiration > new Date()) {
     return localToken.accessToken;
   }
 
   await refreshSpotifyToken();
-  return localToken;
+  return localToken.accessToken;
 };
 
 const refreshSpotifyToken = async () => {

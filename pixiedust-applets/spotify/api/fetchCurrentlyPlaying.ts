@@ -1,4 +1,3 @@
-import { getAuthToken } from "./getAuthToken";
 import { CurrentlyPlayingResponse, EpisodeObject, TrackObject } from "./types";
 
 export type CurrentlyPlaying = {
@@ -10,25 +9,21 @@ export type CurrentlyPlaying = {
 };
 
 export const fetchCurrentlyPlaying = async (
-  spDcCookie: string,
-  username: string
+  token: string
 ): Promise<CurrentlyPlaying> => {
-  const token = await getAuthToken(spDcCookie, username);
-
-  console.log(
-    `\n\n\tcurl --header "Authorization: ${token}" https://api.spotify.com/v1/me/player/currently-playing\n\n`
-  );
+  // console.debug(
+  //   `\n\n\tcurl --header "Authorization: Bearer ${token}" https://api.spotify.com/v1/me/player/currently-playing\n\n`
+  // );
 
   const res = await fetch(
     "https://api.spotify.com/v1/me/player/currently-playing",
     {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     }
   );
 
-  console.log(await res.text());
   if (!res.ok) {
     throw new Error(`Failed to fetch currently playing: ${res.statusText}`);
   }
@@ -40,11 +35,14 @@ export const fetchCurrentlyPlaying = async (
     throw new Error("Nothing is currently playing");
   }
 
-  if (json.type !== "track" && json.type !== "episode") {
-    throw new Error(`Unsupported item type: ${json.type}`);
+  if (
+    json.currently_playing_type !== "track" &&
+    json.currently_playing_type !== "episode"
+  ) {
+    throw new Error(`Unsupported item type: ${json.currently_playing_type}`);
   }
 
-  if (json.type === "episode") {
+  if (json.currently_playing_type === "episode") {
     const episode = json.item as EpisodeObject;
     return {
       imageUrl: episode.images[episode.images.length - 1].url,

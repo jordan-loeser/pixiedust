@@ -25,5 +25,5 @@ export type CurrentlyPlayingResponse = {
   is_playing: boolean;
   progress_ms: number;
   item: TrackObject | EpisodeObject | null;
-  type: "track" | "episode" | "ad" | "unknown";
+  currently_playing_type: "track" | "episode" | "ad" | "unknown";
 };
