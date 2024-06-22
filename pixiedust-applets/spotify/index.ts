@@ -7,7 +7,7 @@ const DEFAULT_HOLD_DURATION_S = 2;
 const DEFAULT_DURATION_S = 20;
 
 // Styling
-const PADDING = 2;
+const PADDING = 0;
 
 type SpotifyAppletSchema = {
   duration?: number; // seconds
