@@ -25,6 +25,7 @@ interface AppletInterface {
  * Abstract class representing the foundation for creating animated applets on an HTML canvas.
  */
 export abstract class Applet implements AppletInterface {
+  abstract id: string;
   abstract isDone: boolean;
   abstract isActive: boolean;
   abstract setup(): Promise<void>;

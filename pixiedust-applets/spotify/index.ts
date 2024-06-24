@@ -17,6 +17,7 @@ type SpotifyAppletSchema = {
 
 class SpotifyApplet extends Applet {
   // Abstract
+  public id = "spotify";
   public isActive = false;
   public isDone = false;
 
