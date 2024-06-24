@@ -10,6 +10,7 @@ type NYCTrainSignAppletSchema = {
 
 class NYCTrainSignApplet extends Applet {
   // Abstract
+  public id = "nyctrainsign";
   public isDone = false;
   public isActive = false;
 

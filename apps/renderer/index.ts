@@ -139,7 +139,7 @@ app.get("/render", async (req, res) => {
   let buffer = await encode(applet, format);
 
   while (buffer === null) {
-    console.log("Null buffer, trying next applet...");
+    console.log(`${applet.id} returned null buffer, trying next applet...`);
     applet = scheduler.getApplet();
     buffer = await encode(applet, format);
   }
@@ -165,7 +165,7 @@ type SpotifyToken = {
 };
 
 // TODO: move to Redis
-let localToken: SpotifyToken;
+let localToken: SpotifyToken | null = null;
 let localState: string;
 
 app.get("/authenticate/spotify", async (_req, res) => {
@@ -239,17 +239,22 @@ app.get("/callback/spotify", async (req, res) => {
 });
 
 const getSpotifyAccessToken = async (): Promise<string> => {
-  if (localToken && localToken.expiration > new Date()) {
+  if (localToken !== null && localToken.expiration > new Date()) {
     return localToken.accessToken;
   }
 
-  await refreshSpotifyToken();
-  return localToken.accessToken;
+  const newToken = await refreshSpotifyToken();
+
+  return newToken.accessToken;
 };
 
-const refreshSpotifyToken = async () => {
-  if (!localToken || !localToken.refreshToken) {
-    throw new Error("No refresh token available");
+const refreshSpotifyToken = async (): Promise<SpotifyToken> => {
+  if (localToken === null) {
+    throw new Error("Local token is empty");
+  }
+
+  if (!localToken.refreshToken) {
+    throw new Error("Refresh token is empty");
   }
 
   if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
@@ -276,9 +281,13 @@ const refreshSpotifyToken = async () => {
 
   const json = await res.json();
 
-  localToken = {
+  const newToken = {
     accessToken: json.access_token,
-    refreshToken: json.refresh_token,
+    refreshToken: json.refresh_token || localToken.refreshToken,
     expiration: new Date(Date.now() + json.expires_in * 1000),
-  };
+  } as SpotifyToken;
+
+  localToken = newToken;
+
+  return newToken;
 };

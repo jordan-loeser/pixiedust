@@ -22,6 +22,7 @@ type ConwaysGameOfLifeAppletSchema = {
 
 class ConwaysGameOfLifeApplet extends Applet {
   // Abstract
+  public id = "conways-game-of-life";
   public isDone = false;
   public isActive = true;
 
