@@ -38,6 +38,11 @@ $ yarn install
 $ yarn dev
 ```
 
+## Press
+
+[Adafruit](https://blog.adafruit.com/2024/01/23/pixiedust-a-web-based-approach-to-creating-graphics-for-pixel-based-displays-such-as-led-matrices/) - January 23, 2024
+
+
 ## Acknowledgements
 
 The pixiedust approach to rendering is heavily inspired by [pixlet](https://github.com/tidbyt/pixlet), created by the team doing great work at [Tidbyt](https://tidbyt.com/). Check them out!
