@@ -31,7 +31,8 @@ class CountingApplet extends Applet {
   }
 
   async setup() {
-    // Any async setup required, such as pulling data or resetting private variables
+    // Any async setup required, such as pulling data
+    // or resetting private variables
     this.current = 0;
   }
 
