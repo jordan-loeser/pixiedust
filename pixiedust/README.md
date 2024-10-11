@@ -24,14 +24,17 @@ class CountingApplet extends Applet {
   private max: number;
   private current: number = 0;
 
-  constructor(canvas: HTMLCanvasElement, config: CountingAppletConfig) {
-    // Initialize any priate variables, optionally passed through a config
+  constructor(canvas: HTMLCanvasElement,
+    config: CountingAppletConfig) {
+    // Initialize any priate variables,
+    // optionally passed through a config
     super(canvas, config.frameRate);
     this.max = config.max;
   }
 
   async setup() {
-    // Any async setup required, such as pulling data or resetting private variables
+    // Any async setup required, such as pulling data
+    // or resetting private variables
     this.current = 0;
   }
 
