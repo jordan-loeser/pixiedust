@@ -9,7 +9,8 @@ A screensaver from before the streaming era. Will it hit the corner this time?
 
 ## Config Values
 
-| Key       | Type  | Description  | Default |
-| --------- | ----- | ------------ | ------- |
-| `value`\* | `type | Description. | n/a     |
-
+| Key         | Type     | Description                                         | Default |
+| ----------- | -------- | --------------------------------------------------- | ------- |
+| `duration`  | `number` | The total duration in seconds to present the applet | 20      |
+| `frameRate` | `number` | In frames per second                                | 10      |
+| `showTrail` | `number` | Show the previous positions as the logo moves       | `false` |

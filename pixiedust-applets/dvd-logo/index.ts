@@ -19,9 +19,9 @@ const COLORS = [
 ];
 
 type DVDLogoAppletSchema = {
+  duration?: number; // seconds
   frameRate?: number;
   showTrail?: boolean;
-  duration?: number; // seconds
 };
 
 class DVDLogoApplet extends Applet {
