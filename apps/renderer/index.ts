@@ -3,8 +3,11 @@ import cors from "cors";
 import helmet from "helmet";
 import { JSDOM } from "jsdom";
 import { Applet, Scheduler } from "pixiedust";
-import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
+
+// Import individual applets
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
+import DVDLogoApplet from "@applets/dvd-logo";
+import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import SpotifyApplet from "@applets/spotify";
 
 const PORT: number = process.env.PORT
@@ -81,45 +84,8 @@ scheduler.register(downtown14th);
 
 scheduler.register(spotify);
 
-// const conways3 = new ConwaysGameOfLifeApplet(canvas, {
-//   layers: [
-//     { cellSize: 4, cellColor: "red" },
-//     { cellSize: 2, cellColor: "blue" },
-//   ],
-//   compositeOperation: "screen",
-//   frameCount: 50,
-// });
-// scheduler.register(conways3);
-
-// const conways = new ConwaysGameOfLifeApplet(canvas, {
-//   layers: [{ cellColor: "#5500aa" }],
-//   fadeOut: true,
-// });
-// // scheduler.register(conways);
-
-// const conways4 = new ConwaysGameOfLifeApplet(canvas, {
-//   layers: [
-//     { cellSize: 2, cellColor: "pink" },
-//     { cellSize: 1, cellColor: "purple" },
-//     // { cellSize: 2, cellColor: "blue" },
-//   ],
-//   compositeOperation: "hard-light",
-//   frameCount: 50,
-// });
-// // scheduler.register(conways4);
-
-// const conways4 = new ConwaysGameOfLifeApplet(canvas, {
-//   layers: [
-//     { cellSize: 1, cellColor: "rgb(255,0,0)" },
-//     { cellSize: 1, cellColor: "rgb(0,255,0)" },
-//     { cellSize: 1, cellColor: "rgb(0,0,255)" },
-//     // { cellSize: 1, cellColor: "purple" },
-//     // { cellSize: 2, cellColor: "blue" },
-//   ],
-//   compositeOperation: "lighter",
-//   frameCount: 50,
-// });
-// // scheduler.register(conways4);
+const dvdLogo = new DVDLogoApplet(canvas);
+scheduler.register(dvdLogo);
 
 enum Format {
   GIF = "gif",

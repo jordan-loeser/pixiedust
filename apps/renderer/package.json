@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@applets/conways-game-of-life": "*",
+    "@applets/dvd-logo": "*",
     "@applets/nyctrainsign": "*",
     "@applets/spotify": "*",
     "canvas": "^2.11.2",

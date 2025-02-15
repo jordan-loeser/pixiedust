@@ -1,0 +1,21 @@
+{
+  "name": "@applets/dvd-logo",
+  "version": "1.0.0",
+  "description": "A screensaver from before the streaming era. Will it hit the corner this time?",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jordan Loeser",
+  "license": "ISC",
+  "dependencies": {
+    "pixiedust": "*"
+  },
+  "devDependencies": {
+    "tsc": "^2.0.4",
+    "typescript": "^5.2.2"
+  }
+}
