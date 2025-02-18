@@ -100,8 +100,8 @@ class DVDLogoApplet extends Applet {
     if (hit[1]) this.yVel *= -1;
 
     // Update position
-    this.xPos += this.xVel;
-    this.yPos += this.yVel;
+    this.xPos = Math.max(this.xPos + this.xVel, 0);
+    this.yPos = Math.max(this.yPos + this.yVel, 0);
 
     // Check for done
     this.frame += 1;
