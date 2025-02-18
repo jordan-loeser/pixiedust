@@ -43,6 +43,7 @@ class DVDLogoApplet extends Applet {
   private colorIndex: number = 0;
   private xVel = 1 | -1;
   private yVel = 1 | -1;
+  private hasHitCorner = false;
 
   // Components
   private image: Image;
@@ -64,6 +65,7 @@ class DVDLogoApplet extends Applet {
     this.xPos = Math.floor(Math.random() * this.numXPositions);
     this.yPos = Math.floor(Math.random() * this.numYPositions);
     this.colorIndex = Math.floor(Math.random() * COLORS.length);
+    this.hasHitCorner = false;
   }
 
   draw() {
@@ -79,10 +81,16 @@ class DVDLogoApplet extends Applet {
       hit[1] = true;
     }
     if (hit[0] || hit[1]) {
+      // Once the logo hits a wall, stop color-blasting if active
+      this.hasHitCorner = false;
       // Change color right when the logo hits a wall... satisfying!
       this.colorIndex = (this.colorIndex + 1) % COLORS.length;
+      if (hit[0] && hit[1]) this.hasHitCorner = true;
     }
-    // TODO: Do something special for corner hit
+
+    // Change color every frame after logo hits a corner
+    if (this.hasHitCorner)
+      this.colorIndex = (this.colorIndex + 1) % COLORS.length;
 
     // Draw color under logo
     this.ctx.fillStyle = COLORS[this.colorIndex];
@@ -100,8 +108,8 @@ class DVDLogoApplet extends Applet {
     if (hit[1]) this.yVel *= -1;
 
     // Update position
-    this.xPos += this.xVel;
-    this.yPos += this.yVel;
+    this.xPos = Math.max(this.xPos + this.xVel, 0);
+    this.yPos = Math.max(this.yPos + this.yVel, 0);
 
     // Check for done
     this.frame += 1;
