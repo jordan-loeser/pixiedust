@@ -66,6 +66,9 @@ const conways2 = new ConwaysGameOfLifeApplet(canvas, {
 });
 scheduler.register(conways2);
 
+const dvdLogo = new DVDLogoApplet(canvas);
+scheduler.register(dvdLogo);
+
 scheduler.register(spotify);
 
 const uptown14th = new NYCTrainApplet(canvas, {
@@ -84,8 +87,8 @@ scheduler.register(downtown14th);
 
 scheduler.register(spotify);
 
-const dvdLogo = new DVDLogoApplet(canvas);
-scheduler.register(dvdLogo);
+const dvdLogoWithTrail = new DVDLogoApplet(canvas, { showTrail: true });
+scheduler.register(dvdLogoWithTrail);
 
 enum Format {
   GIF = "gif",
