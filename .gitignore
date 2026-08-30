@@ -138,3 +138,6 @@ build/
 
 # turbo
 .turbo
+
+# AI tooling
+.cursor/
