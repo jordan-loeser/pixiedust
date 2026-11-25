@@ -16,6 +16,7 @@
     "@applets/conways-game-of-life": "*",
     "@applets/dvd-logo": "*",
     "@applets/nyctrainsign": "*",
+    "@applets/soccer-scores": "*",
     "@applets/spotify": "*",
     "@applets/thanksgiving": "*",
     "canvas": "^2.11.2",
