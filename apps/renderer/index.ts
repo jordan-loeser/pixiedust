@@ -8,6 +8,7 @@ import { Applet, Scheduler } from "pixiedust";
 import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
 import DVDLogoApplet from "@applets/dvd-logo";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
+import SoccerScoresApplet from "@applets/soccer-scores";
 import SpotifyApplet from "@applets/spotify";
 import { TurkeyTrotApplet } from "@applets/thanksgiving";
 
@@ -52,6 +53,10 @@ const spotify = new SpotifyApplet(canvas, {
 });
 scheduler.register(spotify);
 
+// Arsenal scores (ESPN team 359); skipped automatically outside match time
+const arsenal = new SoccerScoresApplet(canvas, { teamId: "359" });
+scheduler.register(arsenal);
+
 const downtown18th = new NYCTrainApplet(canvas, {
   stationId: "131",
   direction: Direction.SOUTH,
@@ -70,6 +75,8 @@ scheduler.register(conways2);
 const dvdLogo = new DVDLogoApplet(canvas);
 scheduler.register(dvdLogo);
 
+scheduler.register(arsenal);
+
 scheduler.register(spotify);
 
 const uptown14th = new NYCTrainApplet(canvas, {
@@ -85,6 +92,8 @@ const downtown14th = new NYCTrainApplet(canvas, {
   direction: Direction.SOUTH,
 });
 scheduler.register(downtown14th);
+
+scheduler.register(arsenal);
 
 scheduler.register(spotify);
 
