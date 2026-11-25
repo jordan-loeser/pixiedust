@@ -9,6 +9,7 @@ import ConwaysGameOfLifeApplet from "@applets/conways-game-of-life";
 import DVDLogoApplet from "@applets/dvd-logo";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import SpotifyApplet from "@applets/spotify";
+import { TurkeyTrotApplet } from "@applets/thanksgiving";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -89,6 +90,11 @@ scheduler.register(spotify);
 
 const dvdLogoWithTrail = new DVDLogoApplet(canvas, { showTrail: true });
 scheduler.register(dvdLogoWithTrail);
+
+// Thanksgiving week only: isActive is false the rest of the year, so the
+// scheduler skips straight past it.
+const turkeyTrot = new TurkeyTrotApplet(canvas);
+scheduler.register(turkeyTrot);
 
 enum Format {
   GIF = "gif",

@@ -40,6 +40,13 @@ export abstract class Applet implements AppletInterface {
   protected frameRate: number;
 
   /**
+   * NeuQuant sample factor passed to the GIF encoder (1 = sample every pixel,
+   * best palette; 10 = fast). Lower it for art with small, important accents
+   * that would otherwise be quantized away.
+   */
+  protected gifQuality = 10;
+
+  /**
    * Frames duration in ms, derived from frameRate.
    */
   private frameDuration;
@@ -103,7 +110,7 @@ export abstract class Applet implements AppletInterface {
       highWaterMark: 5 * 1024 * 1024, // 5MB
     });
     encoder.setFrameRate(this.frameRate);
-    encoder.setQuality(10);
+    encoder.setQuality(this.gifQuality);
     encoder.setDispose(3);
     encoder.writeHeader();
 
