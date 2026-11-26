@@ -1,10 +1,12 @@
 import { Applet, Font } from "pixiedust";
+import * as K from "../lib/kamiPumpkins";
 import { LEAF_COLORS, LEAF_SHAPES } from "../lib/leaves";
 import { PALETTE as P } from "../lib/palette";
 import { SeasonalConfig, isSeasonActive } from "../lib/schedule";
 import {
   Sprite,
   drawSprite,
+  mapColors,
   mulberry32,
   spriteHeight,
   spriteWidth,
@@ -28,10 +30,28 @@ type Leaf = {
   front: boolean;
 };
 
+/**
+ * Kami's pumpkins are shaded in muted oranges that gamma turns to brick.
+ * Snap their oranges onto the panel palette by brightness; keep the black
+ * outline and green stems.
+ */
+const panelPumpkin = (s: Sprite) =>
+  mapColors(s, (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    if (r < 0x30 || g > r) return hex; // outline or stem
+    const lum = 0.6 * r + 0.4 * g;
+    if (lum < 170) return P.rust;
+    if (lum < 183) return P.orange;
+    return P.amber;
+  });
+
 export type FallingLeavesSchema = SeasonalConfig & {
   frameRate?: number;
   duration?: number;
+  /** Wordmark; pass "" for leaves only. */
   text?: string;
+  /** Set a few pumpkins (CC0, Kami's Pixel Pumpkins) in the leaf bed. */
+  pumpkins?: boolean;
 };
 
 /**
@@ -56,6 +76,9 @@ export class FallingLeavesApplet extends Applet {
   private pile: (string | null)[][] = [];
   /** Height of the pile in each column. */
   private pileTop: number[] = [];
+  /** Highest row the pile may reach in each column. */
+  private maxTop: number[] = [];
+  private pumpkins: { sprite: Sprite; x: number; y: number }[] = [];
   private text?: TextBitmap;
 
   constructor(canvas: HTMLCanvasElement, config: FallingLeavesSchema = {}) {
@@ -71,13 +94,35 @@ export class FallingLeavesApplet extends Applet {
     this.isActive = isSeasonActive(this.config);
     if (!this.isActive) return;
 
-    this.text = await renderText(this.textStr, Font.CHERRY);
+    this.text = this.textStr ? await renderText(this.textStr, Font.CHERRY) : undefined;
     this.rand = mulberry32(Date.now());
     const { width, height } = this.canvas;
     this.pile = Array.from({ length: height }, () =>
       Array<string | null>(width).fill(null)
     );
     this.pileTop = Array(width).fill(height);
+    this.maxTop = Array(width).fill(height - PILE_MAX);
+    this.pumpkins = [];
+    if (this.config.pumpkins) {
+      const spots: [Sprite, number][] = [
+        [K.PUMPKINLARGE, 14],
+        [K.PUMPKINSMALL, 30],
+        [K.PUMPKINPATCH, 70],
+        [K.PUMPKINMEDIUM, 96],
+      ].map(([sp, x]) => [panelPumpkin(sp as Sprite), x as number]);
+      for (const [sprite, x] of spots) {
+        const y = height - 1 - spriteHeight(sprite);
+        this.pumpkins.push({ sprite, x, y });
+        // Leaves land on the pumpkins and may pile a little on top
+        for (let dx = 0; dx < spriteWidth(sprite); dx++) {
+          const first = sprite.rows.findIndex((r) => r[dx] && r[dx] !== ".");
+          if (first < 0) continue;
+          const col = x + dx;
+          this.pileTop[col] = Math.min(this.pileTop[col], y + first);
+          this.maxTop[col] = Math.min(this.maxTop[col], y + first - 1);
+        }
+      }
+    }
     // A thin bed of leaves already on the ground
     for (let x = 0; x < width; x++) {
       const h = 1 + (this.rand() < 0.4 ? 1 : 0);
@@ -147,6 +192,9 @@ export class FallingLeavesApplet extends Applet {
       drawText(ctx, this.text, x, y, { color: P.cream, shadow: P.crimson });
     }
 
+    // Pumpkins sit in the leaf bed; the pile is drawn over their bases
+    for (const p of this.pumpkins) drawSprite(ctx, p.sprite, p.x, p.y);
+
     // Pile
     for (let y = 0; y < canvas.height; y++) {
       const row = this.pile[y];
@@ -197,7 +245,6 @@ export class FallingLeavesApplet extends Applet {
    * own column of the pile, like sand, so the drift stays grounded.
    */
   private stamp(l: Leaf, sprite: Sprite, lx: number) {
-    const maxTop = this.canvas.height - PILE_MAX;
     const w = spriteWidth(sprite);
     for (let dx = 0; dx < w; dx++) {
       const col = lx + dx;
@@ -207,7 +254,7 @@ export class FallingLeavesApplet extends Applet {
       const depth = Math.min(2, Math.ceil(ink / 2));
       for (let i = 0; i < depth; i++) {
         const y = this.pileTop[col] - 1;
-        if (y < maxTop) break;
+        if (y < this.maxTop[col]) break;
         this.settlePixel(col, y, l.color);
       }
     }
