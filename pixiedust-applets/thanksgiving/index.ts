@@ -15,3 +15,5 @@ export type { WishboneSchema } from "./applets/Wishbone";
 export { HolidayRotationApplet } from "./applets/HolidayRotation";
 export type { HolidayRotationSchema } from "./applets/HolidayRotation";
 export { isThanksgivingDay } from "./lib/schedule";
+export { NYC, weatherLine } from "./lib/weather";
+export type { WeatherConfig } from "./lib/weather";

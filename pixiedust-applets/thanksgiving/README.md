@@ -31,7 +31,7 @@ Maple, oak, and elm leaves flutter down past a harvest moon and settle into a dr
 
 ## Harvest Table
 
-The dinner spread slides along a red tablecloth with wisps of steam rising, and a message is stitched into the cloth below. The dishes run one full lap per render.
+The dinner spread slides along a red tablecloth with wisps of steam rising. Today's weather is stitched into the cloth below (from [Open-Meteo](https://open-meteo.com/), no key needed), followed by a greeting. The dishes and cloth run one full lap per render, long enough to read the whole line.
 
 <img src="./docs/table.gif" width="512px"/>
 
@@ -67,11 +67,12 @@ Applet-specific keys:
 | FallingLeaves   | `text`     | `string`   | `"GIVE THANKS"` (`""` for no words)    |
 | FallingLeaves   | `pumpkins` | `boolean`  | `false`                                |
 | FallingLeaves   | `duration` | `number`   | `15` (seconds)                         |
-| HarvestTable    | `message`  | `string`   | `"GOBBLE GOBBLE * PASS THE PIE * ..."` |
+| HarvestTable    | `message`  | `string`   | `"HAPPY THANKSGIVING"`                 |
+| HarvestTable    | `weather`  | `WeatherConfig \| false` | `NYC` (Manhattan, °F)    |
 | HarvestTable    | `menu`     | `Dish[]`   | `MENU` from `lib/food.ts`              |
 | HolidayRotation | `applets`  | `Applet[]` | required                               |
 
-The table message uses the 3×5 mono font, where `W` reads as `H`, so avoid words with W.
+The cloth uses the 3×5 mono font, where `W` reads as `H`, so avoid words with W. The weather wording already does (snow reads "FLURRIES", thunderstorms "STORMS"). The weather is cached for 10 minutes. If the lookup fails or takes longer than 2.5 s, the cloth shows the greeting alone.
 
 ## CC0 art
 
