@@ -32,18 +32,19 @@ type Leaf = {
 
 /**
  * Kami's pumpkins are shaded in muted oranges that gamma turns to brick.
- * Snap their oranges onto the panel palette by brightness; keep the black
- * outline and green stems.
+ * Snap them to solid orange with rust ridges; keep the black outline and
+ * green stems. With pumpkins on, leaves avoid orange (PUMPKIN_LEAF_COLORS)
+ * so the pumpkins stand apart on the panel.
  */
 const panelPumpkin = (s: Sprite) =>
   mapColors(s, (hex) => {
     const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
     if (r < 0x30 || g > r) return hex; // outline or stem
     const lum = 0.6 * r + 0.4 * g;
-    if (lum < 170) return P.rust;
-    if (lum < 183) return P.orange;
-    return P.amber;
+    return lum < 170 ? P.rust : P.orange;
   });
+
+const PUMPKIN_LEAF_COLORS = [P.crimson, P.maple, P.gold];
 
 export type FallingLeavesSchema = SeasonalConfig & {
   frameRate?: number;
@@ -71,6 +72,7 @@ export class FallingLeavesApplet extends Applet {
 
   private frame = 0;
   private rand = mulberry32(1);
+  private colors: readonly string[] = LEAF_COLORS;
   private leaves: Leaf[] = [];
   /** Settled pile: one color (or null) per pixel. */
   private pile: (string | null)[][] = [];
@@ -96,6 +98,7 @@ export class FallingLeavesApplet extends Applet {
 
     this.text = this.textStr ? await renderText(this.textStr, Font.CHERRY) : undefined;
     this.rand = mulberry32(Date.now());
+    this.colors = this.config.pumpkins ? PUMPKIN_LEAF_COLORS : LEAF_COLORS;
     const { width, height } = this.canvas;
     this.pile = Array.from({ length: height }, () =>
       Array<string | null>(width).fill(null)
@@ -126,7 +129,7 @@ export class FallingLeavesApplet extends Applet {
     // A thin bed of leaves already on the ground
     for (let x = 0; x < width; x++) {
       const h = 1 + (this.rand() < 0.4 ? 1 : 0);
-      for (let i = 0; i < h; i++) this.settlePixel(x, height - 1 - i, this.pick(LEAF_COLORS));
+      for (let i = 0; i < h; i++) this.settlePixel(x, height - 1 - i, this.pick(this.colors));
     }
     // Start mid-fall so the first frame isn't empty
     this.leaves = Array.from({ length: 14 }, () =>
@@ -141,7 +144,7 @@ export class FallingLeavesApplet extends Applet {
   private spawn(y = -6): Leaf {
     return {
       shape: this.pick(LEAF_SHAPES),
-      color: this.pick(LEAF_COLORS),
+      color: this.pick(this.colors),
       x0: this.rand() * (this.canvas.width + 8) - 4,
       y,
       vy: 0.25 + this.rand() * 0.3,
@@ -192,9 +195,6 @@ export class FallingLeavesApplet extends Applet {
       drawText(ctx, this.text, x, y, { color: P.cream, shadow: P.crimson });
     }
 
-    // Pumpkins sit in the leaf bed; the pile is drawn over their bases
-    for (const p of this.pumpkins) drawSprite(ctx, p.sprite, p.x, p.y);
-
     // Pile
     for (let y = 0; y < canvas.height; y++) {
       const row = this.pile[y];
@@ -206,6 +206,10 @@ export class FallingLeavesApplet extends Applet {
         }
       }
     }
+
+    // Pumpkins over the pile: their black outline cuts a dark gap between
+    // pumpkin and leaves, which keeps them distinct on the panel
+    for (const p of this.pumpkins) drawSprite(ctx, p.sprite, p.x, p.y);
 
     // Leaves in front
     for (const l of this.leaves) if (l.front) this.drawLeaf(l);
