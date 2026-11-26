@@ -9,8 +9,10 @@ const DEFAULT_FRAME_RATE = 15;
 const DEFAULT_MESSAGE =
   "GOBBLE GOBBLE  *  PASS THE PIE  *  GIVE THANKS  *  SECONDS PLEASE  *  ";
 const TABLE_TOP = 24; // hem row; dishes sit on the row above it
-const DISH_GAP = 12;
+const DISH_GAP = 8;
 const CLOTH_SPEED = 0.5; // the embroidery drifts slower than the dishes
+const STEAM = "#c8beb4";
+const STEAM_FADE = "#8a8078";
 
 export type HarvestTableSchema = SeasonalConfig & {
   frameRate?: number;
@@ -98,19 +100,24 @@ export class HarvestTableApplet extends Applet {
     this.isDone = this.frame >= Math.max(this.spreadWidth, canvas.width);
   }
 
-  /** Wisps that rise and sway from each steam anchor, on a 12-frame loop. */
+  /**
+   * Steam: a continuous, gently waving wisp per anchor. The wave travels
+   * upward and the top fades, so it reads as one rising curl rather than
+   * separate specks.
+   */
   private drawSteam(dish: Dish, sx: number, sy: number, f: number) {
     const { ctx } = this;
     const anchors = dish.steamFrom ?? [];
     anchors.forEach((ax, i) => {
-      const t = (f + i * 5) % 12;
-      for (let k = 0; k < 3; k++) {
-        const rise = t / 2 + k * 2;
-        const y = Math.round(sy - 2 - rise);
-        if (y < 0) continue;
-        const sway = Math.round(Math.sin((rise + i) * 0.9));
-        ctx.fillStyle = k === 0 ? P.steam : P.star;
-        if (k === 0 || (t + k) % 3 !== 0) ctx.fillRect(sx + ax + sway, y, 1, 1);
+      const phase = f * 0.22 + i * 2.1;
+      // Each wisp breathes: grows to full height, then thins out
+      const height = 4 + Math.round((Math.sin(f * 0.07 + i * 1.7) + 1) * 1.5);
+      for (let r = 0; r < height; r++) {
+        const y = sy - 2 - r;
+        if (y < 0) break;
+        const x = sx + ax + Math.round(Math.sin(r * 0.8 - phase) * 1.2);
+        ctx.fillStyle = r < height - 2 ? STEAM : STEAM_FADE;
+        ctx.fillRect(x, y, 1, 1);
       }
     });
   }

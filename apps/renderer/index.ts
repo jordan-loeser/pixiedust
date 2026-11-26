@@ -10,7 +10,13 @@ import DVDLogoApplet from "@applets/dvd-logo";
 import NYCTrainApplet, { Direction } from "@applets/nyctrainsign";
 import SoccerScoresApplet from "@applets/soccer-scores";
 import SpotifyApplet from "@applets/spotify";
-import { TurkeyTrotApplet } from "@applets/thanksgiving";
+import {
+  FallingLeavesApplet,
+  HarvestTableApplet,
+  HolidayRotationApplet,
+  ParadeBalloonApplet,
+  TurkeyTrotApplet,
+} from "@applets/thanksgiving";
 
 const PORT: number = process.env.PORT
   ? parseInt(process.env.PORT as string, 10)
@@ -104,6 +110,18 @@ scheduler.register(dvdLogoWithTrail);
 // scheduler skips straight past it.
 const turkeyTrot = new TurkeyTrotApplet(canvas);
 scheduler.register(turkeyTrot);
+
+// Thanksgiving Day only: a holiday applet plays after every regular slot,
+// cycling through this pool. Inactive (and skipped) every other day.
+const thanksgivingDay = new HolidayRotationApplet(canvas, {
+  window: "day",
+  applets: [
+    new ParadeBalloonApplet(canvas),
+    new FallingLeavesApplet(canvas, { text: "", pumpkins: true }),
+    new HarvestTableApplet(canvas),
+  ],
+});
+scheduler.interleave(thanksgivingDay);
 
 enum Format {
   GIF = "gif",

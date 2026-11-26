@@ -7,6 +7,8 @@ export const DEFAULT_TIME_ZONE = "America/New_York";
 export type SeasonalConfig = {
   /** Ignore the calendar and always be active (handy for previews). */
   force?: boolean;
+  /** "week" (default): Mon–Sun of Thanksgiving week. "day": Thursday only. */
+  window?: "week" | "day";
   /** IANA zone the week is computed in. */
   timeZone?: string;
 };
@@ -46,9 +48,18 @@ export function isThanksgivingWeek(
   return day >= t - 3 && day <= t + 3;
 }
 
+export function isThanksgivingDay(
+  timeZone = DEFAULT_TIME_ZONE,
+  now = new Date()
+): boolean {
+  const { year, month, day } = todayIn(timeZone, now);
+  return month === 11 && day === thanksgivingDay(year);
+}
+
 export function isSeasonActive(config: SeasonalConfig = {}): boolean {
-  return (
-    config.force === true ||
-    isThanksgivingWeek(config.timeZone ?? DEFAULT_TIME_ZONE)
-  );
+  if (config.force === true) return true;
+  const zone = config.timeZone ?? DEFAULT_TIME_ZONE;
+  return config.window === "day"
+    ? isThanksgivingDay(zone)
+    : isThanksgivingWeek(zone);
 }

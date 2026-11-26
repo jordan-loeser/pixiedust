@@ -19,6 +19,16 @@ export class Scheduler {
   }
 
   /**
+   * Inserts `applet` after every applet registered so far, so it gets every
+   * other turn. Call it after the regular schedule is built. An applet that
+   * returns null (e.g. out of season) is simply skipped by the renderer.
+   * @param applet - The `Applet` instance to interleave.
+   */
+  interleave(applet: Applet): void {
+    this.applets = this.applets.flatMap((a) => [a, applet]);
+  }
+
+  /**
    * Retrieves the next applet in a round-robin fashion.
    * @throws Will throw an error if no applets are registered.
    * @returns The next `Applet` in the sequence.

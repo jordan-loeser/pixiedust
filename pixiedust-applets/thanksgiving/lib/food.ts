@@ -1,4 +1,5 @@
 import { PALETTE as P } from "./palette";
+import * as H from "./henryFood";
 import { Sprite } from "./sprite";
 
 /**
@@ -139,12 +140,38 @@ export const POTATOES: Dish = {
   },
 };
 
-/** Serving order, left to right as the table slides by. */
-export const MENU: readonly Dish[] = [
+/** The original hand-drawn spread. */
+export const ORIGINAL_MENU: readonly Dish[] = [
   ROLLS,
   CORN,
   ROAST_TURKEY,
   CRANBERRY,
   POTATOES,
   PUMPKIN_PIE,
+];
+
+const henry = (name: string, sprite: Sprite, steamFrom?: number[]): Dish => ({
+  name,
+  sprite,
+  hot: !!steamFrom,
+  steamFrom,
+});
+
+/**
+ * Default spread, from Henry Software's CC0 Free Pixel Food (see
+ * assets/henry-food). Serving order, left to right as the table slides by.
+ */
+export const MENU: readonly Dish[] = [
+  henry("rolls", H.ROLL, [7]),
+  henry("roast", H.CHICKEN, [5, 10]),
+  henry("cranberry", H.JAM),
+  henry("potatoes", H.POTATO, [7]),
+  henry("pumpkin pie", H.PIEPUMPKIN, [8]),
+  henry("apple pie", H.PIEAPPLE, [8]),
+];
+
+/** Extra CC0 dishes, left out of the default spread to keep the GIF small. */
+export const EXTRA_DISHES: readonly Dish[] = [
+  henry("drumstick", H.CHICKENLEG),
+  henry("turnip", H.TURNIP),
 ];

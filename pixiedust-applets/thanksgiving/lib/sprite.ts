@@ -52,3 +52,10 @@ export function mulberry32(seed: number) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+
+/** Returns a copy of the sprite with every legend color passed through `fn`. */
+export function mapColors(sprite: Sprite, fn: (hex: string) => string): Sprite {
+  const legend: Record<string, string> = {};
+  for (const [k, v] of Object.entries(sprite.legend)) legend[k] = fn(v);
+  return { rows: sprite.rows, legend };
+}
