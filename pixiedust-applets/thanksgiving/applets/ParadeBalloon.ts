@@ -104,13 +104,15 @@ export class ParadeBalloonApplet extends Applet {
     const handlers = [-9, -3, 4, 10];
     handlers.forEach((hx, i) => {
       const sx = cx + hx + Math.sin(f * 0.3 + i) * 0.5;
-      line(ctx, cx + hx * 0.4, cy + BALLOON_R - 1, sx, STREET_Y - 1, P.plate);
+      line(ctx, cx + hx * 0.4, cy + BALLOON_R - 1, sx, STREET_Y - 2, P.plate);
     });
 
     // Handlers: tiny figures on the street, in front of the buildings
     handlers.forEach((hx, i) => {
       const sx = Math.round(cx + hx + Math.sin(f * 0.3 + i) * 0.5);
-      px(ctx, sx, STREET_Y - 2, P.cream);
+      // Head, then a two-pixel coat, so they read as people
+      px(ctx, sx, STREET_Y - 3, P.cream);
+      px(ctx, sx, STREET_Y - 2, i % 2 ? P.red : P.face);
       px(ctx, sx, STREET_Y - 1, i % 2 ? P.red : P.face);
     });
     ctx.fillStyle = P.mahogany;
