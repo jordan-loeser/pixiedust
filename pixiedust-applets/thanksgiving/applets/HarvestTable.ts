@@ -4,19 +4,23 @@ import { PALETTE as P } from "../lib/palette";
 import { SeasonalConfig, isSeasonActive } from "../lib/schedule";
 import { drawSprite, spriteHeight, spriteWidth } from "../lib/sprite";
 import { TextBitmap, drawText, inkRows, renderText } from "../lib/text";
+import { NYC, WeatherConfig, weatherLine } from "../lib/weather";
 
 const DEFAULT_FRAME_RATE = 15;
-const DEFAULT_MESSAGE =
-  "GOBBLE GOBBLE  *  PASS THE PIE  *  GIVE THANKS  *  SECONDS PLEASE  *  ";
+const DEFAULT_MESSAGE = "HAPPY THANKSGIVING";
+const SEPARATOR = "  *  ";
 const TABLE_TOP = 24; // hem row; dishes sit on the row above it
 const DISH_GAP = 8;
-const CLOTH_SPEED = 0.5; // the embroidery drifts slower than the dishes
+const CLOTH_SPEED = 1; // the cloth moves with the dishes, like a conveyor
 const STEAM = "#c8beb4";
 const STEAM_FADE = "#8a8078";
 
 export type HarvestTableSchema = SeasonalConfig & {
   frameRate?: number;
+  /** Greeting stitched after the weather. */
   message?: string;
+  /** Where to read the weather for; false for greeting only. Default NYC. */
+  weather?: WeatherConfig | false;
   menu?: readonly Dish[];
 };
 
@@ -54,7 +58,11 @@ export class HarvestTableApplet extends Applet {
     this.isActive = isSeasonActive(this.config);
     if (!this.isActive) return;
 
-    this.message = await renderText(this.messageStr, Font.MONO);
+    // Weather first, then the greeting; greeting alone if the lookup fails
+    const weather =
+      this.config.weather === false ? null : await weatherLine(this.config.weather ?? NYC);
+    const line = [weather, this.messageStr].filter(Boolean).join(SEPARATOR) + SEPARATOR;
+    this.message = await renderText(line, Font.MONO);
     let x = 0;
     this.placed = this.menu.map((dish) => {
       const p = { dish, x };
